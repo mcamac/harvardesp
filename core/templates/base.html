@@ -1,0 +1,41 @@
+{% load staticfiles %}
+
+<html>
+<head>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+
+
+  <title> Harvard ESP </title>
+</head>
+<body>
+
+  <div id="header">
+    <div id="header_content">
+      <div class="pull-left">
+        <h1 class="logo"> <a href="{% url 'show_home' %}"> Harvard ESP </a> </h1>
+      </div>
+
+      <div class="pull-right nav-links">
+        <a href='{% url "catalog" %}'> FAQ </a>
+        <a href='{% url "catalog" %}'> COURSES </a>
+
+        {% if user.is_authenticated %}
+          Welcome, {{ user.username }} (My Courses | My Info |
+          <a href="{% url 'logout' %}"> Logout </a>)
+        {% else %}
+          <a href="{% url 'login' %}"> Login </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div id="content_wrapper">
+    {% block content %} {% endblock %}
+  </div>
+
+  <div id="footer">
+    <p> harvardesp@gmail.com | +1 617 299 6047 | 180 Eliot Mail Ctr., Cambridge, MA </p>
+  </div>
+</body>
+</html>

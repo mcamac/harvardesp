@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2> {{ course.name }} </h2>
+<p> {{ course.teacher }} </p>
+
+<h3> Description </h3>
+<p> {{ course.description }} </p>
+
+<h3> Info </h3>
+<p> Time:  <br /> Location: TBA </p>
+
+<h3> Documents </h3>
+<a href="#"> Syllabus </a>
+{% endblock %}
