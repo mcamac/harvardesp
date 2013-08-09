@@ -14,6 +14,9 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^grappelli/', include('grappelli.urls')),
 
     url(r'^courses/', include('courses.urls')),
+    url(r'^accounts/', include('accounts.urls')),
+    url(r'^', include('core.urls')),
 )

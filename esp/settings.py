@@ -1,3 +1,5 @@
+
+import os
 # Django settings for esp project.
 
 DEBUG = True
@@ -67,11 +69,18 @@ STATIC_ROOT = ''
 # Example: "http://example.com/static/", "http://static.example.com/"
 STATIC_URL = '/static/'
 
+# Root project path
+PROJECT_PATH = os.path.abspath(os.path.dirname(__name__))
+
+ROOT_STATIC_DIR = os.path.join(PROJECT_PATH, 'static')
+ROOT_TEMPLATE_DIR = os.path.join(PROJECT_PATH, 'templates')
+
 # Additional locations of static files
 STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+    ROOT_STATIC_DIR,
 )
 
 # List of finder classes that know how to find static files in
@@ -107,24 +116,31 @@ ROOT_URLCONF = 'esp.urls'
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'esp.wsgi.application'
 
+
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+    ROOT_TEMPLATE_DIR,
 )
 
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.sites',
+    # 'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
+    'grappelli',
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+    # 'registration',
     'south',
+    'flatblocks',
+    'core',
+    'accounts',
     'courses',
 )
 
@@ -156,3 +172,11 @@ LOGGING = {
         },
     }
 }
+
+AUTH_PROFILE_MODULE = "courses.UserProfile"
+
+LOGIN_REDIRECT_URL = '/courses/me'
+
+ACCOUNT_ACTIVATION_DAYS = 7
+
+GRAPPELLI_ADMIN_TITLE = "ESP Admin"

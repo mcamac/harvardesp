@@ -1,1 +1,9 @@
-# Create your views here.
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import (
+	redirect,
+	render,
+	render_to_response)
+
+
+def show_home(request):
+	return render(request, 'pages/home.html')
