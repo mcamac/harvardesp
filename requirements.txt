@@ -1,4 +1,5 @@
 django==1.5.1
 django-flatblocks
 django-grappelli==2.4.5
+django-widget-tweaks
 south==0.8

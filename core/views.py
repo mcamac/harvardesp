@@ -7,3 +7,6 @@ from django.shortcuts import (
 
 def show_home(request):
 	return render(request, 'pages/home.html')
+
+def show_faq(request):
+	return render(request, 'pages/faq.html')

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% load placeholder %}
+{% block content %}
+<h2> Register as a Student </h2>
+
+<form action="{% url 'register_student' %}" method="post">
+{% csrf_token %}
+<div class='field-wrapper'>
+	{{ form.email.label_tag }}
+	{{ form.email|placeholder:'Email' }}
+</div>
+<div class='field-wrapper'>
+	{{ form.password.label_tag }}
+	{{ form.password|placeholder:'Password' }}
+</div>
+{# todo add password confirm #}
+
+<div class='field-wrapper inline'>
+	{{ form.address.label_tag }}
+	{{ form.address|placeholder:'Address' }}
+</div>
+<div class='field-wrapper inline'>
+	{{ form.city.label_tag }}
+	{{ form.city|placeholder:'City' }}
+</div>
+<div class='field-wrapper inline'>
+	<label for="id_zip_code">Zip Code</label>
+	{{ form.zip_code|placeholder:'Zip Code' }}
+</div>
+<br/>
+<input type="submit" value="Register"/>
+</form>
+
+{% endblock %}

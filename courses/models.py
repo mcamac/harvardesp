@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
-from django.forms import ModelForm
+from django import forms
 
 
 class UserProfile(models.Model):
@@ -41,6 +41,22 @@ class Student(models.Model):
 	def __unicode__(self):
 		user = self.profile.user
 		return u"%s %s" % (user.first_name, user.last_name)
+
+class StudentForm(forms.ModelForm):
+	email = forms.EmailField(label="Email")
+	password = forms.CharField(widget=forms.PasswordInput)
+	parent_email = forms.EmailField()
+
+	class Meta:
+		model = Student
+		fields = ['address', 'city', 'state', 'zip_code',
+				  'school', 'grade', 'parent_first_name',
+				  'parent_last_name', 'parent_email', 'parent_primary_phone',
+				  'parent_secondary_phone', 'emergency_primary_phone',
+				  'emergency_secondary_phone', 'emergency_address',
+				  'emergency_city', 'emergency_state', 'emergency_zip_code']
+
+
 
 
 class Teacher(models.Model):
@@ -100,12 +116,19 @@ class Course(models.Model):
 	def __unicode__(self):
 		return self.name
 
-class CourseForm(ModelForm):
+class CourseForm(forms.ModelForm):
+	name = forms.CharField(max_length=100)
+	description = forms.CharField(widget=forms.Textarea)
+	prerequisites = forms.CharField(widget=forms.Textarea)
+	max_enrollment = forms.IntegerField()
+	timeslots = forms.ModelMultipleChoiceField(queryset=Timeslot.objects.all())
+	subjects = forms.ModelMultipleChoiceField(queryset=Subject.objects.all())
+
 	class Meta:
 		model = Course
 		fields = ['name', 'description', 'prerequisites',
 			      'min_grade', 'max_grade', 'max_enrollment',
-			      'location', 'timeslots', 'subjects']
+			      'timeslots', 'subjects']
 
 
 class CourseApplication(models.Model):

@@ -41,10 +41,13 @@ class FlatBlockAdmin(admin.ModelAdmin):
     ordering = ['slug', ]
     list_display = ('slug', 'header')
     search_fields = ('slug', 'header', 'content')
+    
     class Media:
 	    js = [
 	        '/static/grappelli/tinymce/jscripts/tiny_mce/tiny_mce.js',
 	        '/static/tinymce_setup.js',
-	    ] 
+	    ]
+
+
 
 admin.site.register(FlatBlock, FlatBlockAdmin)

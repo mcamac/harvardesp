@@ -6,23 +6,13 @@
 
 <h3> Your Classes </h3>
 {% for course in courses %}
-	{{ course.name }} - 
+<p>
+	{{ course.name }} - (Awaiting Approval) - 
 	<a href="{% url 'edit_course' id=course.id %}"> Edit </a>
+</p>
 {% endfor %}
 
 
-<h3> Announcements </h3>
-
-<h3> Schedule </h3>
-
-{% flatblock "teacher-announcements" using "blocks/h3_block.html" %}
-
-Info sessions
-○ Syllabi due
-○ Teacher interviews/meetings
-○ Registration opens (start accepting students and check daily)
-○ Teacher Training
-○ First day of class
-○ Last day of class
+{% flatblock "Teacher Announcements" using "blocks/h3_block.html" %}
 
 {% endblock %}

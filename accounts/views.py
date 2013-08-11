@@ -4,6 +4,8 @@ from django.shortcuts import (
 	render,
 	render_to_response)
 
+from courses.models import StudentForm
+
 
 def do_login(request):
 	if request.POST:
@@ -14,3 +16,12 @@ def do_login(request):
 
 def do_logout(request):
 	return render(request, 'pages/home.html')
+
+
+def register_student(request):
+	form = StudentForm()
+	ctx = {'form': form}
+	return render(request, 'accounts/register/student.html', ctx)
+
+def register_teacher(request):
+	pass

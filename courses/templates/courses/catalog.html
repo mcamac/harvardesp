@@ -4,9 +4,26 @@
 <h2> Fall 2013 Course Catalog </h2>
 
 {% for course in courses %}
-	<h3> {{ course.name }} </h3>
-	<p> {{ course.description }} </p>
-	<p> {{ course.prerequisites }} </p>
-	<p> {{ course.timeslots }} {{ course.location }} </p>
+<div class="course-div">
+	<div class="course-header">
+		<div class="pull-left">
+			<h3 class="course-name"> {{ course.name }} </h3>
+		</div>
+		<div class="course-apply pull-right">
+			<a class='apply-btn' href="#"> Apply for this course </a>
+		</div>
+	</div>
+	<div class="course-content">
+		<p> {{ course.teacher }} </p>
+		<p> {{ course.description }} </p>
+		<p> <strong> Prerequisites </strong> {{ course.prerequisites }} </p>
+		<p> <a href="#"> Syllabus </a> </p>
+		<p>
+			<strong> Time </strong> {{ course.timeslots.all|join:', ' }},
+			<strong> Location </strong> {{ course.location }} 
+		</p>
+		
+	</div>
+</div>
 {% endfor %}
 {% endblock %}

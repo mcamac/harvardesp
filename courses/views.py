@@ -4,7 +4,8 @@ from django.shortcuts import (
 	render,
 	render_to_response)
 
-from courses.models import Course, Student, Teacher
+from django.http import HttpResponseRedirect
+from courses.models import Course, Student, Teacher, CourseForm
 
 
 
@@ -45,6 +46,7 @@ def personal_portal(request):
 	return redirect('/')
 
 
+@login_required
 def edit_course(request, id):
 	""" Shows a view for editing a course. Only accessible by admins
 		and teachers. """
@@ -60,6 +62,14 @@ def edit_course(request, id):
 
 	ctx = {}
 	ctx['course'] = course
+	if request.POST:
+		ctx['form'] = CourseForm(request.POST, instance=course)
+		print ctx['form'].full_clean()
+		if ctx['form'].is_valid():
+			ctx['form'].save()
+
+	else:
+		ctx['form'] = CourseForm(instance=course)
 	return render(request, 'courses/edit_course.html', ctx)
 
 

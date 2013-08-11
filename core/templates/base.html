@@ -1,5 +1,6 @@
 {% load staticfiles %}
 
+{% load flatblock_tags %}
 <html>
 <head>
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
@@ -18,11 +19,14 @@
       </div>
 
       <div class="pull-right nav-links">
-        <a href='{% url "catalog" %}'> FAQ </a>
+        <a href='{% url "show_faq" %}'> FAQ </a>
         <a href='{% url "catalog" %}'> COURSES </a>
 
         {% if user.is_authenticated %}
-          Welcome, {{ user.username }} (My Courses | My Info |
+          Welcome, {{ user.username }} (
+          <a href="{% url 'personal_portal' %}">
+            My Courses
+          </a> | My Info |
           <a href="{% url 'logout' %}"> Logout </a>)
         {% else %}
           <a href="{% url 'login' %}"> Login </a>
@@ -35,7 +39,7 @@
   </div>
 
   <div id="footer">
-    <p> harvardesp@gmail.com | +1 617 299 6047 | 180 Eliot Mail Ctr., Cambridge, MA </p>
+    {% flatblock "Footer" %}
   </div>
 </body>
 </html>

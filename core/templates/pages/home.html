@@ -1,11 +1,6 @@
 {% extends "base.html" %}
 
+{% load flatblock_tags %}
 {% block content %}
-<h2> Take classes that matter to you. </h2>
-
-<p> Interested in taking some pretty awesome classes, including some that you would never be able to find at your local high school? </p>
-
-<p> Here at Harvard HSSP, there's something for every type and kind of student. Our past course offerings have included the likes of Stagecraft, Biology of Cancer, Harry Potter in Society, Calculus, Digital Photography, Analytic Number Theory, The Beatles: A History, Modern Anime, and many others. </p>
-
-<p> To boot, you'll be taught by college students from schools like Harvard and MIT, who've custom-designed the curriculum, really know their stuff, and care a whole lot about teaching you the topics they love. </p>
+{% flatblock "Home" using "blocks/h3_block.html" %}
 {% endblock %}

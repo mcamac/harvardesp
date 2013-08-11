@@ -37,11 +37,11 @@ body, html {
 	margin-right: 20px;
 }
 
-#header_content .pull-left {
+.pull-left {
 	float: left;
 }
 
-#header_content .pull-right {
+.pull-right {
 	float: right;
 }
 
@@ -64,4 +64,70 @@ body, html {
 
 h2 {
 	font-weight: 400;
+}
+
+.apply-btn {
+	background-color: rgb(25, 124, 201);
+	color: white;
+	padding: 5px 10px;
+	text-decoration: none;
+}
+
+.apply-btn:hover {
+	background-color: rgb(21, 88, 141);
+}
+
+.course-div {
+	border-bottom: 1px dotted #333;
+	margin-bottom: 10px;
+}
+
+.course-header {
+	height: 45px;
+	overflow: auto;
+}
+
+.course-header .course-name {
+	line-height: 45px;
+	margin: 0px;
+}
+
+.course-header .course-apply {
+	margin-top: 10px;
+}
+
+.course-content {
+	clear: both;
+	margin-top: -10px;
+}
+/* Forms */
+
+div.field-wrapper {
+	margin: 0 0 20px;
+}
+
+div.field-wrapper label {
+	display: block;
+	font-weight: bold;
+	margin: 0 0 2px;
+}
+
+.field-wrapper.inline {
+	display: inline-block;
+	margin-right: 30px;
+	vertical-align: top;
+}
+
+div.field-wrapper input[type=text],
+div.field-wrapper input[type=password] {
+	font-size: 1.0em;
+	height: 30px;
+	line-height: 30px;
+	width: 50%;
+}
+
+div.field-wrapper textarea {
+	font-size: 0.9em;
+	line-height: 20px;
+	width: 100%;
 }
