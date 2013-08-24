@@ -17,7 +17,7 @@ class Migration(SchemaMigration):
 
         # Adding field 'Course.subject'
         db.add_column(u'courses_course', 'subject',
-                      self.gf('django.db.models.fields.related.ForeignKey')(default=0, related_name='courses', to=orm['courses.Subject']),
+                      self.gf('django.db.models.fields.related.ForeignKey')(default='1', related_name='courses', to=orm['courses.Subject']),
                       keep_default=False)
 
 

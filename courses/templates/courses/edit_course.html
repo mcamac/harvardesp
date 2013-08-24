@@ -1,48 +1,29 @@
 {% extends "base.html" %}
 
+{% load form_utils %}
 {% block content %}
+
+{% if not new_course %}
 <h2> Editing: {{ course.name }} </h2>
-
 <form action="{% url 'edit_course' id=course.id %}" method="post">
-{% csrf_token %}
-<div class='field-wrapper'>
-	<label for="id_name">Name</label>
-	{{ form.name }}
-</div>
-<div class="field-wrapper">
-	<label for="id_description">Description</label>
-	{{ form.description }}
-</div>
-<div class="field-wrapper">
-	<label for="id_prerequisites">Prerequisites</label>
-	{{ form.prerequisites }}
-</div>
+{% else %}
+<h2> Create a New Course </h2>
 
-<div class="field-wrapper inline">
-	<label for="id_timeslots">Timeslots</label>
-	{{ form.timeslots }}
-</div>
-<div class="field-wrapper inline">
-	<label for="id_subjects">Subjects</label>
-	{{ form.subjects }}
-</div>
-<div class="field-wrapper inline">
-	<label for="id_min_grade">Min Grade</label>
-	{{ form.min_grade }}
-</div>
-<div class="field-wrapper inline">
-	<label for="id_max_grade">Max Grade</label>
-	{{ form.max_grade }}
-</div>
-<div class="field-wrapper inline">
-	<label for="id_max_enrollment">Max Enrollment</label>
-	{{ form.max_enrollment }}
-</div>
+<form action="{% url 'new_course' %}" method="post">
+{% endif %}
+{% csrf_token %}
+{{ form|render:"forms/no_fieldsets.html" }}
 <br/>
+{% if not new_course %}
 <input type="submit" value="Update"/>
+{% else %}
+<input type="submit" value="Create"/>
+{% endif %}
 </form>
 
+{% if not new_course %}
 <h3> Upload or Remove Files </h3>
 <input type="submit" value="Upload"/>
+{% endif %}
 
 {% endblock %}

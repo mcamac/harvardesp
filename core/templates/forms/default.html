@@ -1,0 +1,27 @@
+{% extends "form_utils/form.html" %}
+
+{% block fields %}
+{% for fieldset in form.fieldsets %}
+<fieldset class="{{ fieldset.classes }}">
+{% if fieldset.legend %}
+<legend>{{ fieldset.legend }}</legend>
+{% endif %}
+{% with fieldset as fields %}
+{% for field in fields %}
+{% if field.is_hidden %}
+{{ field }}
+{% else %}
+<div {{ field.row_attrs }} >
+  {{ field.label_tag }}
+  {{ field.errors }}
+  {{ field }}
+</div>
+{% if 'break-after' in field.row_attrs %}
+<br />
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endwith %}
+</fieldset>
+{% endfor %}
+{% endblock %}

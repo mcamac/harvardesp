@@ -2,14 +2,13 @@
 
 {% load flatblock_tags %}
 {% block content %}
-<h2> Teacher Portal </h2>
+<h2> Student Portal </h2>
 
 <h3> Your Classes </h3>
-<a class="apply-btn" href="{% url 'new_course' %}"> New Class </a>
 
 {% for course in courses %}
 <p>
-	Fall 2013 - {{ course.name }} - Awaiting Approval - 
+	Fall 2013 - {{ course.name }} - (Awaiting Approval) - 
 	<a href="{% url 'course_portal' id=course.id %}"> Course Page </a>
 	-
 	<a href="{% url 'edit_course' id=course.id %}"> Edit </a>
@@ -19,6 +18,6 @@
 {% endfor %}
 
 
-{% flatblock "Teacher Announcements" using "blocks/h3_block.html" %}
+{# {% flatblock "Student Announcements" using "blocks/h3_block.html" %} #}
 
 {% endblock %}

@@ -1,8 +1,11 @@
 from django.conf.urls import patterns, include, url
+from accounts.views import StudentCreateView, TeacherCreateView
 
 urlpatterns = patterns('accounts.views',
-	url(r'^register/student$', 'register_student', name='register_student'),
-	url(r'^register/teacher$', 'register_teacher', name='register_teacher'),
+	url(r'^register/student$', StudentCreateView.as_view(),
+		name='register_student'),
+	url(r'^register/teacher$', TeacherCreateView.as_view(),
+		name='register_teacher'),
 )
 
 urlpatterns += patterns('',

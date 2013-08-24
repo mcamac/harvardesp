@@ -8,15 +8,23 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding field 'Course.teacher'
-        db.add_column(u'courses_course', 'teacher',
-                      self.gf('django.db.models.fields.related.ForeignKey')(default=1, related_name='courses', to=orm['courses.Teacher']),
+        # Adding field 'Teacher.primary_phone'
+        db.add_column(u'courses_teacher', 'primary_phone',
+                      self.gf('django.db.models.fields.CharField')(default=' ', max_length=31),
+                      keep_default=False)
+
+        # Adding field 'Teacher.secondary_phone'
+        db.add_column(u'courses_teacher', 'secondary_phone',
+                      self.gf('django.db.models.fields.CharField')(default=' ', max_length=31),
                       keep_default=False)
 
 
     def backwards(self, orm):
-        # Deleting field 'Course.teacher'
-        db.delete_column(u'courses_course', 'teacher_id')
+        # Deleting field 'Teacher.primary_phone'
+        db.delete_column(u'courses_teacher', 'primary_phone')
+
+        # Deleting field 'Teacher.secondary_phone'
+        db.delete_column(u'courses_teacher', 'secondary_phone')
 
 
     models = {
@@ -60,6 +68,7 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'Course'},
             'description': ('django.db.models.fields.TextField', [], {}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'location': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'max_enrollment': ('django.db.models.fields.IntegerField', [], {}),
             'max_grade': ('django.db.models.fields.IntegerField', [], {}),
             'min_grade': ('django.db.models.fields.IntegerField', [], {}),
@@ -95,6 +104,7 @@ class Migration(SchemaMigration):
             'parent_last_name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'parent_primary_phone': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
             'parent_secondary_phone': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
+            'phone': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
             'profile': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['courses.UserProfile']", 'unique': 'True'}),
             'school': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'state': ('django.db.models.fields.CharField', [], {'max_length': '63'}),
@@ -112,8 +122,10 @@ class Migration(SchemaMigration):
             'grad_year': ('django.db.models.fields.CharField', [], {'max_length': '7'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'major': ('django.db.models.fields.CharField', [], {'max_length': '63'}),
+            'primary_phone': ('django.db.models.fields.CharField', [], {'max_length': '31'}),
             'profile': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['courses.UserProfile']", 'unique': 'True'}),
             'school': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
+            'secondary_phone': ('django.db.models.fields.CharField', [], {'max_length': '31'}),
             'state': ('django.db.models.fields.CharField', [], {'max_length': '63'}),
             'zip_code': ('django.db.models.fields.CharField', [], {'max_length': '15'})
         },

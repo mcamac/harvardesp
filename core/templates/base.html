@@ -3,7 +3,7 @@
 {% load flatblock_tags %}
 <html>
 <head>
-  <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
 
@@ -20,16 +20,21 @@
 
       <div class="pull-right nav-links">
         <a href='{% url "show_faq" %}'> FAQ </a>
-        <a href='{% url "catalog" %}'> COURSES </a>
+        <a href='{% url "catalog" %}'>Course Catalog</a>
 
         {% if user.is_authenticated %}
-          Welcome, {{ user.username }} (
+        <div id="user_nav">
+          <p style="display:inline;">Welcome, {{ user.first_name|capfirst }}</p>
           <a href="{% url 'personal_portal' %}">
-            My Courses
-          </a> | My Info |
-          <a href="{% url 'logout' %}"> Logout </a>)
+            Your Courses
+          </a>
+          <a href="#">
+            Profile
+          </a>
+          <a href="{% url 'logout' %}">Logout</a>&#8203;
+        </div>
         {% else %}
-          <a href="{% url 'login' %}"> Login </a>
+          <a href="{% url 'login' %}" class="login-box">Register/Login</a>
         {% endif %}
       </div>
     </div>

@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django import forms
+from form_utils.forms import BetterModelForm
 
 
 class UserProfile(models.Model):
@@ -22,6 +23,8 @@ class Student(models.Model):
 	school = models.CharField(max_length=255)
 	grade = models.IntegerField()
 
+	phone = models.CharField(max_length=20)
+
 	parent_first_name = models.CharField(max_length=50)
 	parent_last_name = models.CharField(max_length=50)
 	parent_email = models.EmailField()
@@ -42,22 +45,105 @@ class Student(models.Model):
 		user = self.profile.user
 		return u"%s %s" % (user.first_name, user.last_name)
 
-class StudentForm(forms.ModelForm):
+class StudentForm(BetterModelForm):
 	email = forms.EmailField(label="Email")
 	password = forms.CharField(widget=forms.PasswordInput)
-	parent_email = forms.EmailField()
+	first_name = forms.CharField()
+	last_name = forms.CharField()
+
+	def is_valid(self):
+		return super(StudentForm, self).is_valid()
+
+	def clean_email(self):
+		if User.objects.filter(email=self.cleaned_data['email']):
+			raise forms.ValidationError('An account already exists with that email address')
+		return self.cleaned_data['email']
+
+	def save(self, force_insert=False, force_update=False, commit=True):
+		super(StudentForm, self).save(commit=False)
+		data = self.cleaned_data
+		user = User.objects.create(
+			email=data['email'],
+			username=data['email'],
+			first_name=data['first_name'],
+			last_name=data['last_name'])
+		user.set_password(data['password'])
+		user.save()
+		user_profile = UserProfile.objects.create(user=user)
+		# user_fields = ['email', 'password', 'first_name', 'last_name']
+		# for field in user_fields:
+		# 	del self.cleaned_data[field]
+		self.instance.profile = user_profile
+		self.instance.save()
+		return self.instance
+
+	def clean(self):
+		print "CLEANING.."
+		return super(StudentForm, self).clean()
+
+
 
 	class Meta:
 		model = Student
-		fields = ['address', 'city', 'state', 'zip_code',
+		fields = ['first_name', 'last_name', 
+				  'address', 'city', 'state', 'zip_code',
 				  'school', 'grade', 'parent_first_name',
 				  'parent_last_name', 'parent_email', 'parent_primary_phone',
 				  'parent_secondary_phone', 'emergency_primary_phone',
+				  'emergency_first_name', 'emergency_last_name',
 				  'emergency_secondary_phone', 'emergency_address',
+				  'emergency_email',
 				  'emergency_city', 'emergency_state', 'emergency_zip_code']
 
 
+		fieldsets = [
+			('account', {
+				'fields': ['email', 'password', 'first_name', 'last_name'],
+				'legend': 'Account Details'
+			}),
+			('personal', {
+				'fields': ['address', 'city', 'state', 'zip_code'],
+				'legend': 'Personal Details'
+			}),
+			('education', {
+				'fields': ['school', 'grade'],
+				'legend': 'Education Details'
+			}),
+			('parent', {
+				'fields': ['parent_first_name', 'parent_last_name',
+						   'parent_email', 'parent_primary_phone',
+						   'parent_secondary_phone'],
+				'legend': 'Parent/Guardian Details'
+			}),
+			('emergency', {
+				'fields': ['emergency_first_name', 'emergency_last_name',
+						   'emergency_primary_phone',
+						   'emergency_secondary_phone',
+						   'emergency_email', 'emergency_address',
+				           'emergency_city', 'emergency_state',
+				           'emergency_zip_code'],
+				'legend': 'Emergency Contact Details'
+			})
+		]
 
+		row_attrs = {
+			'email': {'class': 'address'},
+			'password': {'class': 'address'},
+			'address': {'class': 'address break-after'},
+			'zip_code': {'class': 'zip'},
+			'school': {'class': 'address'},
+			'parent_last_name': {'class': 'break-after'},
+			'parent_email': {'class': 'address break-after'},
+			'emergency_last_name': {'class': 'break-after'},
+			'emergency_address': {'class':'address break-after'},
+			'emergency_secondary_phone': {'class': 'break-after'},
+			'emergency_zip_code': {'class': 'zip'}
+		}
+
+		for key in fields:
+			if key not in row_attrs:
+				row_attrs[key] = {'class': ''}
+			row_attrs[key]['class'] += ' inline'
 
 class Teacher(models.Model):
 	"""ESP instructor"""
@@ -69,6 +155,9 @@ class Teacher(models.Model):
 	state = models.CharField(max_length=63)
 	zip_code = models.CharField(max_length=15)
 
+	primary_phone = models.CharField(max_length=31)
+	secondary_phone = models.CharField(max_length=31)
+
 	# School info
 	school = models.CharField(max_length=255)
 	major = models.CharField(max_length=63)
@@ -77,6 +166,82 @@ class Teacher(models.Model):
 	def __unicode__(self):
 		user = self.profile.user
 		return u"%s %s" % (user.first_name, user.last_name)
+
+class TeacherForm(BetterModelForm):
+	email = forms.EmailField(label="Email")
+	password = forms.CharField(widget=forms.PasswordInput)
+	first_name = forms.CharField()
+	last_name = forms.CharField()
+
+	def is_valid(self):
+		return super(TeacherForm, self).is_valid()
+
+	def clean_email(self):
+		if User.objects.filter(email=self.cleaned_data['email']):
+			raise forms.ValidationError('An account already exists with that email address')
+		return self.cleaned_data['email']
+
+	def save(self, force_insert=False, force_update=False, commit=True):
+		super(TeacherForm, self).save(commit=False)
+		print "VALIDATIng.."
+		data = self.cleaned_data
+		user = User.objects.create(
+			email=data['email'],
+			username=data['email'],
+			first_name=data['first_name'],
+			last_name=data['last_name'])
+		user.set_password(data['password'])
+		user.save()
+		user_profile = UserProfile.objects.create(user=user)
+		# user_fields = ['email', 'password', 'first_name', 'last_name']
+		# for field in user_fields:
+		# 	del self.cleaned_data[field]
+		self.instance.profile = user_profile
+		self.instance.save()
+		return self.instance
+
+	def clean(self):
+		return super(TeacherForm, self).clean()
+
+
+
+	class Meta:
+		model = Teacher
+		fields = ['first_name', 'last_name', 
+				  'address', 'city', 'state', 'zip_code',
+				  'primary_phone', 'secondary_phone',
+				  'school', 'major', 'grad_year']
+
+
+		fieldsets = [
+			('account', {
+				'fields': ['first_name', 'last_name', 'email', 'password'],
+				'legend': 'Account Details'
+			}),
+			('personal', {
+				'fields': ['address', 'city', 'state', 'zip_code',
+						   'primary_phone', 'secondary_phone'],
+				'legend': 'Personal Details'
+			}),
+			('education', {
+				'fields': ['school', 'major', 'grad_year'],
+				'legend': 'Education Details'
+			}),
+		]
+
+		row_attrs = {
+			'last_name': {'class': 'break-after'},
+			'email': {'class': 'address'},
+			'password': {'class': 'address'},
+			'address': {'class': 'address break-after'},
+			'zip_code': {'class': 'zip break-after'},
+			'school': {'class': 'address'},
+		}
+
+		for key in fields:
+			if key not in row_attrs:
+				row_attrs[key] = {'class': ''}
+			row_attrs[key]['class'] += ' inline'
 
 class Subject(models.Model):
 	name = models.CharField(max_length=255)
@@ -106,17 +271,19 @@ class Course(models.Model):
 
 	max_enrollment = models.IntegerField()
 
-	location = models.CharField(max_length=255)
+	location = models.CharField(max_length=255, default="TBA")
 
 	timeslots = models.ManyToManyField(Timeslot, related_name='courses')
 	subjects = models.ManyToManyField(Subject, related_name='courses')
 
 	teacher = models.ForeignKey(Teacher, related_name='courses')
 
+	approved = models.BooleanField(default=False)
+
 	def __unicode__(self):
 		return self.name
 
-class CourseForm(forms.ModelForm):
+class CourseForm(BetterModelForm):
 	name = forms.CharField(max_length=100)
 	description = forms.CharField(widget=forms.Textarea)
 	prerequisites = forms.CharField(widget=forms.Textarea)
@@ -124,11 +291,20 @@ class CourseForm(forms.ModelForm):
 	timeslots = forms.ModelMultipleChoiceField(queryset=Timeslot.objects.all())
 	subjects = forms.ModelMultipleChoiceField(queryset=Subject.objects.all())
 
+
 	class Meta:
 		model = Course
 		fields = ['name', 'description', 'prerequisites',
 			      'min_grade', 'max_grade', 'max_enrollment',
 			      'timeslots', 'subjects']
+
+		row_attrs = {
+			'min_grade': {'class': 'inline'},
+			'max_grade': {'class': 'inline'},
+			'max_enrollment': {'class': 'inline break-after'},
+			'timeslots': {'class': 'inline'},
+			'subjects': {'class': 'inline'},
+		}
 
 
 class CourseApplication(models.Model):

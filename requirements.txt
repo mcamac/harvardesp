@@ -1,5 +1,7 @@
 django==1.5.1
 django-flatblocks
+django-form-utils
 django-grappelli==2.4.5
 django-widget-tweaks
+MySQL-python
 south==0.8

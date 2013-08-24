@@ -5,10 +5,10 @@
 {% load form_utils %}
 
 {% block content %}
-<h2> Register as a Student </h2>
+<h2> Register as a Teacher </h2>
 <p> Please fill out the form below! All fields are required. </p>
 
-<form action="{% url 'register_student' %}" method="post">
+<form action="{% url 'register_teacher' %}" method="post">
 {% csrf_token %}
 
 {{ form|render:"forms/default.html" }}

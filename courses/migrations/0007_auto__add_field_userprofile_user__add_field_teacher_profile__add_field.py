@@ -10,17 +10,17 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding field 'UserProfile.user'
         db.add_column(u'courses_userprofile', 'user',
-                      self.gf('django.db.models.fields.related.OneToOneField')(default=0, to=orm['auth.User'], unique=True),
+                      self.gf('django.db.models.fields.related.OneToOneField')(default=1, to=orm['auth.User'], unique=True),
                       keep_default=False)
 
         # Adding field 'Teacher.profile'
         db.add_column(u'courses_teacher', 'profile',
-                      self.gf('django.db.models.fields.related.OneToOneField')(default=0, to=orm['courses.UserProfile'], unique=True),
+                      self.gf('django.db.models.fields.related.OneToOneField')(default=1, to=orm['courses.UserProfile'], unique=True),
                       keep_default=False)
 
         # Adding field 'Student.profile'
         db.add_column(u'courses_student', 'profile',
-                      self.gf('django.db.models.fields.related.OneToOneField')(default=0, to=orm['courses.UserProfile'], unique=True),
+                      self.gf('django.db.models.fields.related.OneToOneField')(default=1, to=orm['courses.UserProfile'], unique=True),
                       keep_default=False)
 
 
