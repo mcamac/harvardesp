@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2> Application Successful </h2>
+<p>You have successfully applied for {{ course.name }}.</p>
+
+{% if application.approved == "approved" %}
+<p>Your application was approved!</p>
+{% elif application.approved == "pending" %}
+<p>Your application is pending.</p>
+{% else %}
+<p>Unfortunately, yyour application has been rejected.</p>
+{% endif %}
+
+<a href="{% url 'catalog' %}">Return to Course Catalog</p>
+
+
+
+{% endblock %}

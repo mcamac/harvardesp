@@ -1,12 +1,17 @@
 from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse
 from django.shortcuts import (
+	get_object_or_404,
 	redirect,
 	render,
 	render_to_response)
 
 from django.http import HttpResponseRedirect
-from courses.models import Course, Student, Teacher, CourseForm
+from courses.models import (Course, Student, Teacher,
+	CourseForm, CourseApplication,
+	CourseUpload, CourseUploadForm)
 
+from filetransfers.api import prepare_upload
 import esp.settings as settings
 
 
@@ -14,6 +19,15 @@ def catalog(request):
 	""" Shows the course catalog """
 	ctx = {}
 	ctx['courses'] = Course.objects.filter(approved=True)
+
+	profile = request.user.get_profile()
+	if hasattr(profile, 'student'):
+		applications = CourseApplication.objects.filter(
+			student=profile.student)
+		ctx['applications'] = {}
+		for application in applications:
+			ctx['applications'][application.course.name] = application
+
 	return render(request, 'courses/catalog.html', ctx)
 
 
@@ -31,7 +45,12 @@ def teacher_portal(request):
 def student_portal(request):
 	""" Shows the student portal, which has class info,
 	    schedule deadlines..."""
-	return render(request, 'courses/portal/student.html', {})
+	student = request.user.get_profile().student
+	ctx = {}
+	applications = CourseApplication.objects.filter(
+		student=student).select_related('course')
+	ctx['applications'] = applications
+	return render(request, 'courses/portal/student.html', ctx)
 
 
 @login_required
@@ -50,26 +69,31 @@ def personal_portal(request):
 def edit_course(request, id):
 	""" Shows a view for editing a course. Only accessible by admins
 		and teachers. """
+	view_url = reverse('edit_course', kwargs={'id':id})
 
 	try:
 		course = Course.objects.get(pk=id)
 	except Course.DoesNotExist:
-		redirect('/')
+		return redirect('/')
 
 	user = request.user
+	print hasattr(user.get_profile(), 'teacher') 
 	if not (hasattr(user.get_profile(), 'teacher') or user.is_superuser):
-		redirect('/')
+		return redirect('/')
 
 	ctx = {}
 	ctx['course'] = course
 	if request.POST:
-		ctx['form'] = CourseForm(request.POST, instance=course)
-		print ctx['form'].full_clean()
+		ctx['form'] = CourseForm(request.POST, request.FILES, instance=course)
+		print request.FILES
 		if ctx['form'].is_valid():
 			ctx['form'].save()
+			return redirect(view_url)
 
 	else:
+		ctx['upload_url'], ctx['upload_data'] = prepare_upload(request, view_url)
 		ctx['form'] = CourseForm(instance=course)
+		print ctx
 	return render(request, 'courses/edit_course.html', ctx)
 
 
@@ -79,13 +103,14 @@ def new_course(request):
 	ctx = {}
 	if request.POST:
 		ctx['form'] = CourseForm(request.POST)
+		print ctx['form'].errors
 		if ctx['form'].is_valid():
 			course = ctx['form'].save(commit=False)
 			course.teacher = request.user.get_profile().teacher
 			course.save()
 			ctx['form'].save_m2m()
 			return redirect('personal_portal')
-		return render(request, 'course/edit_course.html', ctx)
+		return render(request, 'courses/edit_course.html', ctx)
 	else:
 		ctx = {}
 		ctx['new_course'] = True
@@ -113,6 +138,7 @@ def course_portal(request, id):
 
 	ctx = {}
 	ctx['course'] = course
+	ctx['upload_form'] = CourseUploadForm()
 	return render(request, 'courses/portal/course.html', ctx)
 
 
@@ -138,3 +164,63 @@ def sign_s3(request):
 	    'signed_request': '%s?AWSAccessKeyId=%s&Expires=%d&Signature=%s' % (url, AWS_ACCESS_KEY, expires, signature),
 	     'url': url
 	  })
+
+
+@login_required
+def apply_course(request, id):
+	student = request.user.get_profile().student
+
+	try:
+		course = Course.objects.get(pk=id)
+	except Course.DoesNotExist:
+		return redirect('/')
+
+	try:
+		application = CourseApplication.objects.get(
+			student=student, course=course)
+	except CourseApplication.DoesNotExist:
+		application = CourseApplication.objects.create(
+			student=student, course=course, approved="pending")
+
+	ctx = {}
+	ctx['application'] = application
+	ctx['course'] = course
+	return render(request, "courses/apply_course.html", ctx)
+
+
+@login_required
+def unapply_course(request, id):
+	student = request.user.get_profile().student
+	course = get_object_or_404(Course, pk=id)
+
+	try:
+		application = CourseApplication.objects.get(
+			student=student, course=course)
+	except CourseApplication.DoesNotExist:
+		return redirect('/')
+
+	application.delete()
+
+	ctx = {}
+	ctx['course'] = course
+	return render(request, "courses/unapply_course.html", ctx)
+
+
+@login_required
+def course_upload(request, id):
+	course = get_object_or_404(Course, pk=id)
+
+	if request.POST:
+		form = CourseUploadForm(request.POST, request.FILES)
+		if form.is_valid():
+			upload = CourseUpload.objects.create(
+				course=course, name=form.cleaned_data['name'],
+				upload=form.cleaned_data['upload'])
+			upload.save()
+			return redirect('course_portal', id=id)
+		else:
+			print form.errors
+
+		pass
+	else:
+		pass

@@ -9,12 +9,13 @@
 
 {% for course in courses %}
 <p>
-	Fall 2013 - {{ course.name }} - Awaiting Approval - 
-	<a href="{% url 'course_portal' id=course.id %}"> Course Page </a>
+	Fall 2013 - {{ course.name }}
+	{% if not course.approved %} (Awaiting Approval) {% endif %}
+	<a href="{% url 'course_portal' id=course.id %}">Course Page</a>
 	-
-	<a href="{% url 'edit_course' id=course.id %}"> Edit </a>
+	<a href="{% url 'edit_course' id=course.id %}">Edit</a>
 	-
-	<a href="{% url 'delete_course' id=course.id %}"> Delete </a>
+	<a href="{% url 'delete_course' id=course.id %}">Delete</a>
 </p>
 {% endfor %}
 

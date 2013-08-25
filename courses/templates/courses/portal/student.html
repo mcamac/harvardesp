@@ -4,20 +4,22 @@
 {% block content %}
 <h2> Student Portal </h2>
 
-<h3> Your Classes </h3>
+<h3>Your Courses</h3>
 
-{% for course in courses %}
+{% for application in applications %}
+{% with application.course as course %}
 <p>
-	Fall 2013 - {{ course.name }} - (Awaiting Approval) - 
+	Fall 2013 - {{ course.name }} - in room: {{ course.location }} - (Awaiting Approval) - 
 	<a href="{% url 'course_portal' id=course.id %}"> Course Page </a>
 	-
-	<a href="{% url 'edit_course' id=course.id %}"> Edit </a>
-	-
-	<a href="{% url 'delete_course' id=course.id %}"> Delete </a>
+	<a href="{% url 'unapply_course' id=course.id %}">Unenroll</a>
 </p>
+{% endwith %}
 {% endfor %}
 
+<h3>Your Schedule</h3>
 
-{# {% flatblock "Student Announcements" using "blocks/h3_block.html" %} #}
+
+{% flatblock "Student Announcements" using "blocks/h3_block.html" %}
 
 {% endblock %}

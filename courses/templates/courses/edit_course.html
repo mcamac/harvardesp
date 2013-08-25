@@ -1,17 +1,19 @@
 {% extends "base.html" %}
 
 {% load form_utils %}
+{% load filetransfers %}
 {% block content %}
 
 {% if not new_course %}
 <h2> Editing: {{ course.name }} </h2>
-<form action="{% url 'edit_course' id=course.id %}" method="post">
+<form action="{% url 'edit_course' id=course.id %}" enctype="multipart/form-data" method="post">
 {% else %}
 <h2> Create a New Course </h2>
 
 <form action="{% url 'new_course' %}" method="post">
 {% endif %}
 {% csrf_token %}
+{% render_upload_data upload_data %}
 {{ form|render:"forms/no_fieldsets.html" }}
 <br/>
 {% if not new_course %}
@@ -21,9 +23,5 @@
 {% endif %}
 </form>
 
-{% if not new_course %}
-<h3> Upload or Remove Files </h3>
-<input type="submit" value="Upload"/>
-{% endif %}
 
 {% endblock %}

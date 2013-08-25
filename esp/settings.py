@@ -51,12 +51,12 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
-MEDIA_ROOT = ''
+MEDIA_ROOT = '/var/www/esp/uploads/'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://example.com/media/", "http://media.example.com/"
-MEDIA_URL = ''
+MEDIA_URL = '/media/'
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
@@ -139,6 +139,7 @@ INSTALLED_APPS = (
     'south',
     'flatblocks',
     'widget_tweaks',
+    'filetransfers',
     'form_utils',
     'core',
     'accounts',
@@ -181,3 +182,17 @@ LOGIN_REDIRECT_URL = '/courses/me'
 ACCOUNT_ACTIVATION_DAYS = 7
 
 GRAPPELLI_ADMIN_TITLE = "ESP Admin"
+
+PUBLIC_DOWNLOAD_URL_BACKEND = 'filetransfers.backends.url.public_download_url'
+
+# Add to your settings file
+CONTENT_TYPES = ['application/pdf']
+# 2.5MB - 2621440
+# 5MB - 5242880
+# 10MB - 10485760
+# 20MB - 20971520
+# 50MB - 5242880
+# 100MB 104857600
+# 250MB - 214958080
+# 500MB - 429916160
+MAX_UPLOAD_SIZE = "5242880"

@@ -12,7 +12,13 @@
 			<h3 class="course-name"> {{ course.name }} </h3>
 		</div>
 		<div class="course-apply pull-right">
-			<a class='apply-btn' href="#"> Apply for this course </a>
+			{% if course.name not in applications %}
+			<a class='apply-btn' href="{% url 'apply_course' id=course.id %}">
+				Apply for this course
+			</a>
+			{% else %}
+				<span>Applied</span>
+			{% endif %}
 		</div>
 	</div>
 	<div class="course-content">

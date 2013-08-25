@@ -1,4 +1,5 @@
 django==1.5.1
+django-filetransfers
 django-flatblocks
 django-form-utils
 django-grappelli==2.4.5

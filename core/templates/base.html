@@ -15,11 +15,12 @@
   <div id="header">
     <div id="header_content">
       <div class="pull-left">
-        <h1 class="logo"> <a href="{% url 'show_home' %}"> Harvard ESP </a> </h1>
+        <h1 class="logo"> <a href="{% url 'show_home' %}">Harvard ESP</a> </h1>
       </div>
 
       <div class="pull-right nav-links">
-        <a href='{% url "show_faq" %}'> FAQ </a>
+        <a href='{% url "show_faq" %}'>FAQ</a>
+        <a href="#">About</a>
         <a href='{% url "catalog" %}'>Course Catalog</a>
 
         {% if user.is_authenticated %}
