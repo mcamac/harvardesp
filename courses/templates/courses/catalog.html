@@ -1,9 +1,13 @@
 {% extends "base.html" %}
+{% load filetransfers %}
 
 {% block content %}
 <h2> Fall 2013 Course Catalog </h2>
 {% if not courses %}
-<p>No courses yet. Please check back soon!</p>
+	<p>No courses yet. Please check back soon!</p>
+{% endif %}
+{% if user.is_anonymous %}
+	<p> Please login to register for courses. </p>
 {% endif %}
 {% for course in courses %}
 <div class="course-div">
@@ -12,12 +16,14 @@
 			<h3 class="course-name"> {{ course.name }} </h3>
 		</div>
 		<div class="course-apply pull-right">
-			{% if course.name not in applications %}
-			<a class='apply-btn' href="{% url 'apply_course' id=course.id %}">
-				Apply for this course
-			</a>
-			{% else %}
-				<span>Applied</span>
+			{% if student %}
+				{% if course.name not in applications %}
+					<a class='apply-btn' href="{% url 'apply_course' id=course.id %}">
+						Apply for this course
+					</a>
+				{% else %}
+					<span>Applied</span>
+				{% endif %}
 			{% endif %}
 		</div>
 	</div>
@@ -25,7 +31,9 @@
 		<p> {{ course.teacher }} </p>
 		<p> {{ course.description }} </p>
 		<p> <strong> Prerequisites </strong> {{ course.prerequisites }} </p>
-		<p> <a href="#"> Syllabus </a> </p>
+		{% if course.syllabus %}
+			<p> <a href="{{ course.syllabus|public_download_url }}"> Syllabus </a> </p>
+		{% endif %}
 		<p>
 			<strong> Time </strong> {{ course.timeslots.all|join:', ' }},
 			<strong> Location </strong> {{ course.location }} 

@@ -6,7 +6,7 @@ from django.shortcuts import (
 	render,
 	render_to_response)
 
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from courses.models import (Course, Student, Teacher,
 	CourseForm, CourseApplication,
 	CourseUpload, CourseUploadForm)
@@ -20,13 +20,15 @@ def catalog(request):
 	ctx = {}
 	ctx['courses'] = Course.objects.filter(approved=True)
 
-	profile = request.user.get_profile()
-	if hasattr(profile, 'student'):
-		applications = CourseApplication.objects.filter(
-			student=profile.student)
-		ctx['applications'] = {}
-		for application in applications:
-			ctx['applications'][application.course.name] = application
+	if not request.user.is_anonymous():
+		profile = request.user.get_profile()
+		if hasattr(profile, 'student'):
+			applications = CourseApplication.objects.filter(
+				student=profile.student)
+			ctx['student'] = profile.student
+			ctx['applications'] = {}
+			for application in applications:
+				ctx['applications'][application.course.name] = application
 
 	return render(request, 'courses/catalog.html', ctx)
 
@@ -100,7 +102,10 @@ def edit_course(request, id):
 @login_required
 def new_course(request):
 	""" Creates a new course and redirects to edit view """
+	view_url = reverse('new_course')
 	ctx = {}
+	ctx['new_course'] = True
+	ctx['upload_url'], ctx['upload_data'] = prepare_upload(request, view_url)
 	if request.POST:
 		ctx['form'] = CourseForm(request.POST)
 		print ctx['form'].errors
@@ -112,8 +117,6 @@ def new_course(request):
 			return redirect('personal_portal')
 		return render(request, 'courses/edit_course.html', ctx)
 	else:
-		ctx = {}
-		ctx['new_course'] = True
 		ctx['form'] = CourseForm()
 		return render(request, 'courses/edit_course.html', ctx)
 
@@ -138,7 +141,6 @@ def course_portal(request, id):
 
 	ctx = {}
 	ctx['course'] = course
-	ctx['upload_form'] = CourseUploadForm()
 	return render(request, 'courses/portal/course.html', ctx)
 
 
@@ -164,6 +166,17 @@ def sign_s3(request):
 	    'signed_request': '%s?AWSAccessKeyId=%s&Expires=%d&Signature=%s' % (url, AWS_ACCESS_KEY, expires, signature),
 	     'url': url
 	  })
+
+
+@login_required
+def manage_course(request, id):
+	"""View for management, such as accepting students and uploading."""
+	ctx = {}
+	course = get_object_or_404(Course, pk=id)
+	ctx['course'] = course
+	ctx['applications'] = CourseApplication.objects.filter(course=course).select_related('student')
+	ctx['upload_form'] = CourseUploadForm()
+	return render(request, "courses/manage.html", ctx)
 
 
 @login_required
@@ -207,6 +220,24 @@ def unapply_course(request, id):
 
 
 @login_required
+def handle_application(request, application_id):
+	teacher = request.user.get_profile().teacher
+	action = request.GET.get('action', None)
+
+	if not action:
+		return None
+	
+	application = get_object_or_404(CourseApplication, pk=application_id)
+	if action == 'accept':
+		application.approved = "approved"
+	elif action == 'reject':
+		application.approved = "rejected"
+	application.save()
+
+	return HttpResponse("done")
+
+
+@login_required
 def course_upload(request, id):
 	course = get_object_or_404(Course, pk=id)
 
@@ -217,10 +248,21 @@ def course_upload(request, id):
 				course=course, name=form.cleaned_data['name'],
 				upload=form.cleaned_data['upload'])
 			upload.save()
-			return redirect('course_portal', id=id)
+			return redirect('manage_course', id=id)
 		else:
 			print form.errors
 
 		pass
 	else:
 		pass
+
+@login_required
+def delete_upload(request, id):
+	""" Deletes a course upload"""
+	upload = get_object_or_404(CourseUpload, pk=id)
+	if not (request.user.is_superuser or
+			upload.course.teacher != request.user.get_profile().teacher):
+		return HttpResponse(status=401)
+
+	upload.delete()
+	return redirect('manage_course', id=upload.course.pk)

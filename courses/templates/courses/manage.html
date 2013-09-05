@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% load filetransfers %}
+{% block content %}
+{% load form_utils %}
+<h2> Management - {{ course.name }} </h2>
+
+<h3> Enrolled Students </h3>
+<table>
+<tr>
+  <th>Name</th>
+  <th>Grade</th>
+  <th>School</th>
+  <th>Enrolled</th>
+  <th>Actions</th>
+</tr>
+{% for application in applications %}
+<tr>
+<td>{{ application.student }}</td>
+<td>{{ application.student.grade }}</td>
+<td>{{ application.student.school }}</td>
+<td>{{ application.approved }}</td>
+<td>
+  <a data-id="{{ application.pk }}" class="handle-application" href="#">Accept</a>
+  <a data-id="{{ application.pk }}" class="handle-application" href='#'>Reject</a>
+</td>
+</tr>
+{% endfor %}
+</table>
+<h3> Uploaded Files </h3>
+
+<ul>
+{% for upload in course.files.all %}
+<li>
+  {{ upload.created_at }} - 
+  <a href="{{ upload.upload|public_download_url }}">{{ upload.name }}</a> -
+  <a href="{% url 'delete_upload' id=upload.id %}"> Delete </a>
+</li>
+{% endfor %}
+</ul>
+
+<h3> Upload a File </h3>
+<form action="{% url 'course_upload' id=course.id %}" enctype="multipart/form-data" method="post">
+{% csrf_token %}
+{{ upload_form|render:"forms/no_fieldsets.html" }}
+<input type="submit" style="display: inline;" value="Upload"/>
+</form>
+{% endblock %}

@@ -7,17 +7,26 @@
 <h3> Your Classes </h3>
 <a class="apply-btn" href="{% url 'new_course' %}"> New Class </a>
 
+<table>
 {% for course in courses %}
-<p>
-	Fall 2013 - {{ course.name }}
-	{% if not course.approved %} (Awaiting Approval) {% endif %}
-	<a href="{% url 'course_portal' id=course.id %}">Course Page</a>
-	-
-	<a href="{% url 'edit_course' id=course.id %}">Edit</a>
-	-
-	<a href="{% url 'delete_course' id=course.id %}">Delete</a>
-</p>
+<tr>
+  <td>{{ course.name }}</td>
+	<td>{% if not course.approved %} (Awaiting Approval) {% endif %}</td>
+	<td>
+    <a href="{% url 'course_portal' id=course.id %}">Course Page</a>
+  </td>
+  <td>
+    <a href="{% url 'manage_course' id=course.id %}">Manage Course</a>
+  </td>
+  <td>
+  	<a href="{% url 'edit_course' id=course.id %}">Edit</a>
+	</td>
+  <td>
+  	<a href="{% url 'delete_course' id=course.id %}">Delete</a>
+  </td>
+</tr>
 {% endfor %}
+</table>
 
 
 {% flatblock "Teacher Announcements" using "blocks/h3_block.html" %}

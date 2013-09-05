@@ -1,5 +1,7 @@
+$fonts: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
 body, html {
-	font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-family: $fonts;
 	margin: 0 auto;
 }
 
@@ -82,7 +84,7 @@ h2 {
 	font-weight: 400;
 }
 
-.apply-btn {
+.apply-btn, input[type="submit"] {
 	background-color: rgb(25, 124, 201);
 	color: white;
 	padding: 5px 10px;
@@ -156,4 +158,19 @@ form div textarea {
 	font-size: 0.9em;
 	line-height: 20px;
 	width: 100%;
+}
+
+input[type="submit"] {
+	background-color: rgb(25, 124, 201);
+	border: none;
+	color: white;
+	font-family: $fonts;
+	font-size: 1.0em;
+	padding: 5px 10px;
+	text-decoration: none;
+}
+
+
+input[type="submit"]:hover {
+	background-color: rgb(21, 88, 141);
 }

@@ -10,18 +10,20 @@
 <p> {{ course.description }} </p>
 
 <h3> Info </h3>
-<p> Time:  <br /> Location: TBA </p>
+<p> <strong>Time:</strong> TBA <br /> <strong>Location:</strong> TBA </p>
 
 <h3> Documents </h3>
+{% if course.syllabus %}
 <a href="{{ course.syllabus|public_download_url }}"> Syllabus </a>
+{% else %}
+<p> No syllabus. </p>
+{% endif %}
 
+<ul>
 {% for upload in course.files.all %}
-<a href="{{ upload.upload|public_download_url }}">{{ upload.name }}</a>
+<li>
+  <a href="{{ upload.upload|public_download_url }}">{{ upload.name }}</a>
+</li>
 {% endfor %}
-
-<form action="{% url 'course_upload' id=course.id %}" enctype="multipart/form-data" method="post">
-{% csrf_token %}
-{{ upload_form|render:"forms/no_fieldsets.html" }}
-<input type="submit" value="upload"/>
-</form>
+</ul>
 {% endblock %}

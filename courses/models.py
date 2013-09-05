@@ -282,7 +282,7 @@ class Course(models.Model):
 
     max_enrollment = models.IntegerField()
 
-    syllabus = models.FileField(upload_to=content_file_name, null=True)
+    syllabus = models.FileField(upload_to=content_file_name, null=True, blank=True)
 
     location = models.CharField(max_length=255, default="TBA")
 
@@ -292,6 +292,8 @@ class Course(models.Model):
     teacher = models.ForeignKey(Teacher, related_name='courses')
 
     approved = models.BooleanField(default=False)
+
+    timeslot = models.ForeignKey(Timeslot, related_name='confirmed_courses', null=True, blank=True)
 
     def __unicode__(self):
         return self.name
@@ -365,3 +367,7 @@ class CourseUploadForm(BetterModelForm):
     class Meta:
         model = CourseUpload
         fields = ['name', 'upload']
+
+        row_attrs = {
+            'name': {'classes': 'inline'}
+        }
