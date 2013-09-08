@@ -196,3 +196,5 @@ CONTENT_TYPES = ['application/pdf']
 # 250MB - 214958080
 # 500MB - 429916160
 MAX_UPLOAD_SIZE = "5242880"
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
