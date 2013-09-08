@@ -10,3 +10,6 @@ def show_home(request):
 
 def show_faq(request):
 	return render(request, 'pages/faq.html')
+
+def show_about(request):
+	return render(request, 'pages/about.html')
