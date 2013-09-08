@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<script type="text/javascript">
+var courses = JSON.parse('{{ courses|safe }}');
+console.log(courses);
+</script>
+<h2> Course Scheduler </h2>
+{% endblock %}

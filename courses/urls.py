@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import patterns, url
 
 urlpatterns = patterns('courses.views',
 	url(r'^catalog/$', 'catalog', name='catalog'),
@@ -10,8 +10,8 @@ urlpatterns = patterns('courses.views',
 	url(r'^unapply/(?P<id>\d+)$', 'unapply_course', name='unapply_course'),
 	url(r'^doupload/(?P<id>\d+)$', 'course_upload', name='course_upload'),
 	url(r'^new/$', 'new_course', name='new_course'),
+	url(r'^scheduler/$', 'scheduler', name='scheduler'),
 	url(r'^destroy/(?P<id>\d+)$', 'delete_course', name='delete_course'),
-	url(r'^signaws/$', 'sign_s3', name='sign_s3'),
 	url(r'^application/(?P<application_id>\d+)$', 'handle_application',
 		name='handle_application'),
 	url(r'^uploads/delete/(?P<id>\d+)$', 'delete_upload', name='delete_upload')

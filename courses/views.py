@@ -1,4 +1,7 @@
+import json
+
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import user_passes_test
 from django.core.urlresolvers import reverse
 from django.shortcuts import (
 	get_object_or_404,
@@ -266,3 +269,12 @@ def delete_upload(request, id):
 
 	upload.delete()
 	return redirect('manage_course', id=upload.course.pk)
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def scheduler(request):
+	courses = Course.objects.all()
+	ctx = {}
+	ctx['courses'] = json.dumps(list(courses.values('name', 'timeslots')))
+
+	return render(request, "courses/scheduler.html", ctx)

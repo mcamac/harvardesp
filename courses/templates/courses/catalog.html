@@ -19,7 +19,7 @@
 			{% if student %}
 				{% if course.name not in applications %}
 					<a class='apply-btn' href="{% url 'apply_course' id=course.id %}">
-						Apply for this course
+						Apply
 					</a>
 				{% else %}
 					<span>Applied</span>
@@ -29,13 +29,14 @@
 	</div>
 	<div class="course-content">
 		<p> {{ course.teacher }} </p>
-		<p> {{ course.description }} </p>
+		<p style="font-size: 0.95em;"> {{ course.description }} </p>
 		<p> <strong> Prerequisites </strong> {{ course.prerequisites }} </p>
+		<p> <strong> Grade Range </strong> {{ course.grade_range }} </p>
 		{% if course.syllabus %}
 			<p> <a href="{{ course.syllabus|public_download_url }}"> Syllabus </a> </p>
 		{% endif %}
 		<p>
-			<strong> Time </strong> {{ course.timeslots.all|join:', ' }},
+			<strong> Time </strong> {{ course.timeslot|default:'TBA' }},
 			<strong> Location </strong> {{ course.location }} 
 		</p>
 		

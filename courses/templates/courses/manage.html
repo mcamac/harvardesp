@@ -29,6 +29,7 @@
 </table>
 <h3> Uploaded Files </h3>
 
+
 <ul>
 {% for upload in course.files.all %}
 <li>
@@ -36,6 +37,8 @@
   <a href="{{ upload.upload|public_download_url }}">{{ upload.name }}</a> -
   <a href="{% url 'delete_upload' id=upload.id %}"> Delete </a>
 </li>
+{% empty %}
+<li> No files yet. </li>
 {% endfor %}
 </ul>
 

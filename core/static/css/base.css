@@ -73,16 +73,28 @@ h2 {
   background-color: #15588d; }
 
 .course-div {
-  border-bottom: 1px dotted #333;
-  margin-bottom: 10px; }
+  cursor: pointer;
+  display: inline-block;
+  min-height: 500px;
+  margin-bottom: 20px;
+  margin: 5px 10px 15px;
+  width: 46%;
+  vertical-align: top;
+  background: #f9f9f9;
+  box-shadow: 0px 1px 2px #BBB inset;
+  border-radius: 3px;
+  padding: 10px 20px;
+  width: 438px; }
+
+.course-div:hover {
+  background: #e2e2e2; }
 
 .course-header {
-  height: 45px;
-  overflow: auto; }
+  height: 45px; }
 
 .course-header .course-name {
-  line-height: 45px;
-  margin: 0px; }
+  margin: 8px 0;
+  width: 340px; }
 
 .course-header .course-apply {
   margin-top: 10px; }

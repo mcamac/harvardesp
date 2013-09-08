@@ -262,8 +262,8 @@ class Timeslot(models.Model):
     end_time = models.TimeField()
 
     def __unicode__(self):
-        return "%s to %s" % (self.start_time.strftime("%I:%M %p"),
-                             self.end_time.strftime("%I:%M %p"))
+        return "%s to %s" % (self.start_time.strftime("%I:%M %p").strip('0'),
+                             self.end_time.strftime("%I:%M %p").strip('0'))
 
 
 def content_file_name(instance, filename):
@@ -297,6 +297,9 @@ class Course(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def grade_range(self):
+        return "%d-%d" % (self.min_grade, self.max_grade)
 
 class CourseForm(BetterModelForm):
     name = forms.CharField(max_length=100)
