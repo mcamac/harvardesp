@@ -47,6 +47,8 @@ class Student(models.Model):
     emergency_state = models.CharField(max_length=63)
     emergency_zip_code = models.CharField(max_length=15)
 
+    needs_aid = models.BooleanField(default=False)
+
     def __unicode__(self):
         user = self.profile.user
         return u"%s %s" % (user.first_name, user.last_name)
@@ -99,8 +101,8 @@ class StudentForm(BetterModelForm):
                   'emergency_first_name', 'emergency_last_name',
                   'emergency_secondary_phone', 'emergency_address',
                   'emergency_email',
-                  'emergency_city', 'emergency_state', 'emergency_zip_code']
-
+                  'emergency_city', 'emergency_state', 'emergency_zip_code',
+                  'needs_aid']
 
         fieldsets = [
             ('account', {
@@ -129,7 +131,7 @@ class StudentForm(BetterModelForm):
                            'emergency_city', 'emergency_state',
                            'emergency_zip_code'],
                 'legend': 'Emergency Contact Details'
-            })
+            }),
         ]
 
         row_attrs = {
