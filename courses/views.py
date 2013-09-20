@@ -88,6 +88,10 @@ def edit_course(request, id):
 	if not (hasattr(user.get_profile(), 'teacher') or user.is_superuser):
 		return redirect('/')
 
+	if not (request.user.is_superuser or
+			upload.course.teacher != request.user.get_profile().teacher):
+		return HttpResponse(status=401)
+
 	ctx = {}
 	ctx['course'] = course
 	if request.POST:
@@ -176,6 +180,10 @@ def sign_s3(request):
 @login_required
 def manage_course(request, id):
 	"""View for management, such as accepting students and uploading."""
+	if not (request.user.is_superuser or
+			upload.course.teacher != request.user.get_profile().teacher):
+		return HttpResponse(status=401)
+
 	ctx = {}
 	course = get_object_or_404(Course, pk=id)
 	ctx['course'] = course
