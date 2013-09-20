@@ -19,6 +19,11 @@ from courses.models import (Course, Student, Teacher,
 from filetransfers.api import prepare_upload
 import esp.settings as settings
 
+def _can_manage_course(user, course):
+	return (user.is_superuser or
+			(hasattr(user.get_profile(), 'teacher') and 
+			 course.teacher == user.get_profile().teacher))
+
 
 def catalog(request):
 	""" Shows the course catalog """
@@ -81,13 +86,9 @@ def edit_course(request, id):
 	course = get_object_or_404(Course, pk=id)
 
 	user = request.user
-	print hasattr(user.get_profile(), 'teacher') 
-	if not (hasattr(user.get_profile(), 'teacher') or user.is_superuser):
-		return redirect('/')
 
-	if not (request.user.is_superuser or
-			course.teacher != request.user.get_profile().teacher):
-		return HttpResponse(status=401)
+	if not _can_manage_course(request.user, course):
+		return redirect('/')
 
 	ctx = {}
 	ctx['course'] = course
@@ -179,10 +180,9 @@ def manage_course(request, id):
 	"""View for management, such as accepting students and uploading."""
 	ctx = {}
 	course = get_object_or_404(Course, pk=id)
-	if not (request.user.is_superuser or
-			course.teacher != request.user.get_profile().teacher):
-		return HttpResponse(status=401)
-	
+	if not _can_manage_course(request.user, course):
+		return redirect('/')
+
 	ctx['course'] = course
 	ctx['applications'] = CourseApplication.objects.filter(course=course).select_related('student')
 	ctx['upload_form'] = CourseUploadForm()
