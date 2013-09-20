@@ -2,12 +2,14 @@ import json
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
+from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.shortcuts import (
 	get_object_or_404,
 	redirect,
 	render,
 	render_to_response)
+from django.template.loader import render_to_string
 
 from django.http import HttpResponse, HttpResponseRedirect
 from courses.models import (Course, Student, Teacher,
@@ -197,7 +199,11 @@ def apply_course(request, id):
 	except CourseApplication.DoesNotExist:
 		application = CourseApplication.objects.create(
 			student=student, course=course, approved="pending")
-
+		email = render_to_string("email/course_application.txt", {
+			'course': course, 'student': student})
+		html_email = render_to_string("email/course_application.html", {
+			'course': course, 'student': student})
+		send_mail('[Harvard ESP] Student Registration', email, 'harvardesp@gmail.com', (course.teacher.profile.user.email,))
 	ctx = {}
 	ctx['application'] = application
 	ctx['course'] = course

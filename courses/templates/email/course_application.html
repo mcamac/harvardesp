@@ -1,0 +1,9 @@
+<p>Dear {{ course.teacher }},</p>
+
+<p>{{ student }} has registered for your course {{ course }}! Please visit 
+<a href="http://www.harvardesp.org{% url 'manage_course' id=course.id %}">
+http://www.harvardesp.org{% url 'manage_course' id=course.id %}</a>
+to handle their registration.</p>
+
+<p>Best,<br/>
+Harvard ESP</p>

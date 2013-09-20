@@ -1,0 +1,8 @@
+Dear {{ course.teacher }},
+
+{{ student }} has registered for your class {{ course }}! Please visit 
+http://www.harvardesp.org{% url 'manage_course' id=course.id %}
+to handle their registration.
+
+Best,
+Harvard ESP
