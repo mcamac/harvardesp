@@ -6,12 +6,18 @@ from courses.models import (
 	Student,
 	Subject,
 	Teacher,
-	Timeslot)
+	Timeslot,
+	UserProfile)
 
 class CourseAdmin(admin.ModelAdmin):
 	pass
 
 admin.site.register(Course, CourseAdmin)
+
+class UserProfileAdmin(admin.ModelAdmin):
+	pass
+
+admin.site.register(UserProfile, UserProfileAdmin)
 
 
 class StudentAdmin(admin.ModelAdmin):
