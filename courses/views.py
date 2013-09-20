@@ -78,10 +78,7 @@ def edit_course(request, id):
 		and teachers. """
 	view_url = reverse('edit_course', kwargs={'id':id})
 
-	try:
-		course = Course.objects.get(pk=id)
-	except Course.DoesNotExist:
-		return redirect('/')
+	course = get_object_or_404(Course, pk=id)
 
 	user = request.user
 	print hasattr(user.get_profile(), 'teacher') 
@@ -89,7 +86,7 @@ def edit_course(request, id):
 		return redirect('/')
 
 	if not (request.user.is_superuser or
-			upload.course.teacher != request.user.get_profile().teacher):
+			course.teacher != request.user.get_profile().teacher):
 		return HttpResponse(status=401)
 
 	ctx = {}
@@ -180,12 +177,12 @@ def sign_s3(request):
 @login_required
 def manage_course(request, id):
 	"""View for management, such as accepting students and uploading."""
-	if not (request.user.is_superuser or
-			upload.course.teacher != request.user.get_profile().teacher):
-		return HttpResponse(status=401)
-
 	ctx = {}
 	course = get_object_or_404(Course, pk=id)
+	if not (request.user.is_superuser or
+			course.teacher != request.user.get_profile().teacher):
+		return HttpResponse(status=401)
+	
 	ctx['course'] = course
 	ctx['applications'] = CourseApplication.objects.filter(course=course).select_related('student')
 	ctx['upload_form'] = CourseUploadForm()
