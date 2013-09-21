@@ -1,11 +1,16 @@
 from django.conf.urls import patterns, include, url
-from accounts.views import StudentCreateView, TeacherCreateView
+from accounts.views import StudentCreateView, TeacherCreateView, StudentEditView, TeacherEditView
 
 urlpatterns = patterns('accounts.views',
 	url(r'^register/student$', StudentCreateView.as_view(),
 		name='register_student'),
 	url(r'^register/teacher$', TeacherCreateView.as_view(),
 		name='register_teacher'),
+	url(r'^edit/student/$', StudentEditView.as_view(),
+		name='edit_student'),
+	url(r'^edit/teacher/$', TeacherEditView.as_view(),
+		name='edit_teacher'),
+	url(r'^profile/$', 'profile', name='profile'),
 )
 
 urlpatterns += patterns('',
@@ -21,5 +26,8 @@ urlpatterns += patterns('',
 		{'post_reset_redirect': '/accounts/login' }),
     url(r'^reset/password/complete/$', 
         'django.contrib.auth.views.password_reset_complete'),
+    url(r'^change/pass/$', 'django.contrib.auth.views.password_change',
+    	name='change_password'),
+    url(r'^change/pass/done/$', 'django.contrib.auth.views.password_change_done'),
 
 )

@@ -153,6 +153,65 @@ class StudentForm(BetterModelForm):
                 row_attrs[key] = {'class': ''}
             row_attrs[key]['class'] += ' inline'
 
+class StudentEditForm(BetterModelForm):
+    class Meta:
+        model = Student
+        fields = ['address', 'city', 'state', 'zip_code',
+                  'school', 'grade', 'parent_first_name',
+                  'parent_last_name', 'parent_email', 'parent_primary_phone',
+                  'parent_secondary_phone', 'emergency_primary_phone',
+                  'emergency_first_name', 'emergency_last_name',
+                  'emergency_secondary_phone', 'emergency_address',
+                  'emergency_email',
+                  'emergency_city', 'emergency_state', 'emergency_zip_code',
+                  'needs_aid']
+
+        fieldsets = [
+            ('personal', {
+                'fields': ['address', 'city', 'state', 'zip_code'],
+                'legend': 'Personal Details'
+            }),
+            ('education', {
+                'fields': ['school', 'grade'],
+                'legend': 'Education Details'
+            }),
+            ('parent', {
+                'fields': ['parent_first_name', 'parent_last_name',
+                           'parent_email', 'parent_primary_phone',
+                           'parent_secondary_phone'],
+                'legend': 'Parent/Guardian Details'
+            }),
+            ('emergency', {
+                'fields': ['emergency_first_name', 'emergency_last_name',
+                           'emergency_primary_phone',
+                           'emergency_secondary_phone',
+                           'emergency_email', 'emergency_address',
+                           'emergency_city', 'emergency_state',
+                           'emergency_zip_code'],
+                'legend': 'Emergency Contact Details'
+            }),
+        ]
+
+        row_attrs = {
+            'email': {'class': 'address'},
+            'password': {'class': 'address'},
+            'address': {'class': 'address break-after'},
+            'zip_code': {'class': 'zip'},
+            'school': {'class': 'address'},
+            'parent_last_name': {'class': 'break-after'},
+            'parent_email': {'class': 'address break-after'},
+            'emergency_last_name': {'class': 'break-after'},
+            'emergency_address': {'class':'address break-after'},
+            'emergency_secondary_phone': {'class': 'break-after'},
+            'emergency_zip_code': {'class': 'zip'}
+        }
+
+        for key in fields:
+            if key not in row_attrs:
+                row_attrs[key] = {'class': ''}
+            row_attrs[key]['class'] += ' inline'
+
+
 class Teacher(models.Model):
     """ESP instructor"""
     profile = models.OneToOneField(UserProfile)
@@ -251,6 +310,42 @@ class TeacherForm(BetterModelForm):
                 row_attrs[key] = {'class': ''}
             row_attrs[key]['class'] += ' inline'
 
+
+class TeacherEditForm(BetterModelForm):
+    class Meta:
+        model = Teacher
+        fields = [ 
+                  'address', 'city', 'state', 'zip_code',
+                  'primary_phone', 'secondary_phone',
+                  'school', 'major', 'grad_year']
+
+
+        fieldsets = [
+            ('personal', {
+                'fields': ['address', 'city', 'state', 'zip_code',
+                           'primary_phone', 'secondary_phone'],
+                'legend': 'Personal Details'
+            }),
+            ('education', {
+                'fields': ['school', 'major', 'grad_year'],
+                'legend': 'Education Details'
+            }),
+        ]
+
+        row_attrs = {
+            'last_name': {'class': 'break-after'},
+            'email': {'class': 'address'},
+            'password': {'class': 'address'},
+            'address': {'class': 'address break-after'},
+            'zip_code': {'class': 'zip break-after'},
+            'school': {'class': 'address'},
+        }
+
+        for key in fields:
+            if key not in row_attrs:
+                row_attrs[key] = {'class': ''}
+            row_attrs[key]['class'] += ' inline'
+
 class Subject(models.Model):
     name = models.CharField(max_length=255)
 
@@ -262,6 +357,7 @@ class Timeslot(models.Model):
     """A time range in which courses may be held."""
     start_time = models.TimeField()
     end_time = models.TimeField()
+    rank = models.IntegerField()
 
     def __unicode__(self):
         return "%s to %s" % (self.start_time.strftime("%I:%M %p").strip('0'),

@@ -1,10 +1,133 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 
 
 {% block content %}
+<style>
+    header, section {
+      display: block;
+    }
+    h1, h2 {
+      text-align: center;
+      font-weight: normal;
+    }
+    #features {
+      margin: auto;
+      font-size: 0.9em;
+    }
+    .connected, .sortable, .exclude, .handles {
+      margin: auto;
+      padding: 0;
+      width: 310px;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+    .sortable.grid {
+      overflow: hidden;
+    }
+    .connected li, .sortable li, .exclude li, .handles li {
+      list-style: none;
+      border: 1px solid #CCC;
+      background: #F6F6F6;
+      font-family: "Tahoma";
+      color: #1C94C4;
+      margin: 5px;
+      padding: 5px;
+      height: 22px;
+    }
+    .handles span {
+      cursor: move;
+    }
+
+
+    li.highlight {
+      background: #FEE25F;
+    }
+    #connected {
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .connected {
+      display: inline-block;
+      width: 250px;
+      vertical-align: top;
+    }
+    .connected li {
+      font-size: 0.9em;
+      height: 50px;
+    }
+    li.disabled {
+      background: #af0c0c;
+      color: white;
+      height: 20px;
+    }
+    li.sortable-placeholder {
+      border: 1px dashed #CCC;
+      background: none;
+    }
+  </style>
+  <script type="text/javascript" src="{% static 'js/jquery.sortable.min.js' %}"></script>
+  {% csrf_token %}
 <script type="text/javascript">
-var courses = JSON.parse('{{ courses|safe }}');
-console.log(courses);
+$(function(){
+  var courses = JSON.parse('{{ courses|safe }}');
+  console.log(courses);
+
+  for (var i in courses) {
+    console.log(courses[i]);
+    var courseLi = '<li class="course" data-id="' + courses[i].id + '">' + courses[i].name + ' <br/>Periods: ' + courses[i].timeslots + '</li>';
+    $('ul[data-id=' + courses[i].timeslot +']').append(courseLi);
+  }
+
+  $('.connected').sortable({
+    connectWith: '.connected',
+    items: ':not(.disabled)'
+  });
+
+  $('.save-btn').click(function(e){
+    var assigns = {};
+    $('li.course').each(function(i, el) {
+      assigns[$(this).data('id')] = $(this).parent('.list').data('id');
+    });
+    console.log(assigns);
+    $.ajax({
+      method: 'post',
+      url: '/courses/scheduler/',
+      data: {slots: JSON.stringify(assigns),
+        csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val()},
+      success: function(data) {
+        if (data == 'OK') {
+          $('.message').html("Timeslots updated.");
+          setTimeout(function(){$('.message').html('');}, 1000);
+        }
+      }
+    });
+  });
+});
 </script>
 <h2> Course Scheduler </h2>
+
+<section>
+
+<section id="connected">
+    <ul class="connected list" data-id='0'>
+      <li class='disabled'>Unscheduled</li>
+    </ul>
+    <ul class="connected list no2" data-id='1'>
+      <li class='disabled'>10AM</li>
+    </ul>
+     <ul class="connected list no3" data-id='2'>
+      <li class='disabled'>1PM</li>
+    </ul>
+     <ul class="connected list no4" data-id='3'>
+      <li class='disabled'>3PM</li>
+    </ul>
+</section>
+
+<a class="apply-btn save-btn">Save</a>
+<p class="message"></p>
 {% endblock %}

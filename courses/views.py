@@ -12,7 +12,7 @@ from django.shortcuts import (
 from django.template.loader import render_to_string
 
 from django.http import HttpResponse, HttpResponseRedirect
-from courses.models import (Course, Student, Teacher,
+from courses.models import (Course, Student, Teacher, Timeslot,
 	CourseForm, CourseApplication,
 	CourseUpload, CourseUploadForm)
 
@@ -285,8 +285,32 @@ def delete_upload(request, id):
 
 @user_passes_test(lambda u: u.is_superuser)
 def scheduler(request):
+	if not request.user.is_superuser:
+		return redirect('/')
+		
+	if request.POST:
+		slots = json.loads(request.POST.get('slots'))
+		print slots
+		for pk, slot in slots.iteritems():
+			print pk, slot
+			course = Course.objects.get(pk=int(pk))
+			if slot > 0:
+				course.timeslot = Timeslot.objects.get(rank=int(slot))
+			else:
+				course.timeslot = None
+			course.save()
+
+		return HttpResponse("OK")
 	courses = Course.objects.all()
 	ctx = {}
-	ctx['courses'] = json.dumps(list(courses.values('name', 'timeslots')))
+	courses_arr = []
+	for course in courses:
+		courses_arr.append({
+			'id': course.pk,
+			'name': course.name,
+			'timeslots': [timeslot.rank for timeslot in course.timeslots.all()],
+			'timeslot': course.timeslot.rank if course.timeslot else 0
+		})
+	ctx['courses'] = json.dumps(courses_arr)
 
 	return render(request, "courses/scheduler.html", ctx)

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% load placeholder %}
+{% load widget_tweaks %}
+{% load form_utils %}
+
+{% block content %}
+<h2> Update Profile</h2>
+
+<p>Email: {{ user.email }}</p>
+<p><a href="{% url 'change_password' %}">Change Your Password</a></p>
+
+<form method="post">
+{% csrf_token %}
+
+{{ form|render:"forms/default.html" }}
+<br/>
+<input type="submit" value="Update Profile"/>
+</form>
+
+{% endblock %}
