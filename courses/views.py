@@ -60,7 +60,7 @@ def student_portal(request):
 	student = request.user.get_profile().student
 	ctx = {}
 	applications = CourseApplication.objects.filter(
-		student=student).select_related('course')
+		student=student).select_related('course').order_by('approved')
 	ctx['applications'] = applications
 	return render(request, 'courses/portal/student.html', ctx)
 
@@ -235,20 +235,21 @@ def unapply_course(request, id):
 
 @login_required
 def handle_application(request, application_id):
-	teacher = request.user.get_profile().teacher
 	action = request.GET.get('action', None)
-
 	if not action:
-		return None
+		return HttpResponse("error")
 	
 	application = get_object_or_404(CourseApplication, pk=application_id)
+	if not _can_manage_course(request.user, application.course):
+		return HttpResponse("error")
+
 	if action == 'accept':
-		application.approved = "approved"
+		application.approved = "accepted"
 	elif action == 'reject':
 		application.approved = "rejected"
 	application.save()
 
-	return HttpResponse("done")
+	return HttpResponse(application.approved)
 
 
 @login_required

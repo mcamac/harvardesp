@@ -11,6 +11,17 @@
 {% endif %}
 {% for course in courses %}
 <div class="course-div">
+	<div class="course-subject">
+		{% if 'Science' in course.subjects_list %}
+		<p style="background: rgb(101, 10, 218);">
+		{% elif 'Humanities' in course.subjects_list %}
+		<p style="background: rgb(8, 165, 204);">
+		{% elif 'Mathematics/Computer Science' in course.subjects_list %}
+		<p style="background: rgb(233, 154, 9);">
+		{% endif %}
+			{{ course.subjects.all|join:', ' }}
+		</p>
+	</div>
 	<div class="course-header">
 		<div class="pull-left">
 			<h3 class="course-name"> {{ course.name }} </h3>

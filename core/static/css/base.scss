@@ -39,6 +39,10 @@ body, html {
 	background-color: rgb(194, 77, 105);
 	display: inline;
 	padding: 10px;
+
+	a {
+		margin-left: 8px;
+	}
 }
 
 #header_content a {
@@ -187,3 +191,12 @@ input[type="submit"] {
 input[type="submit"]:hover {
 	background-color: rgb(21, 88, 141);
 }
+
+
+.course-subject p{
+	font-weight: 200;
+	color: white;
+	padding: 5px;
+}
+
+

@@ -28,6 +28,8 @@ body, html {
   background-color: #c24d69;
   display: inline;
   padding: 10px; }
+  #header_content #user_nav a {
+    margin-left: 8px; }
 
 #header_content a {
   color: white;
@@ -147,3 +149,8 @@ input[type="submit"] {
 
 input[type="submit"]:hover {
   background-color: #15588d; }
+
+.course-subject p {
+  font-weight: 200;
+  color: white;
+  padding: 5px; }

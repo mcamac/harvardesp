@@ -4,7 +4,7 @@
 {% block content %}
 {% load form_utils %}
 <h2> Management - {{ course.name }} </h2>
-
+<p class="messages"></p>
 <h3> Enrolled Students </h3>
 <table>
 <tr>
@@ -19,10 +19,10 @@
 <td>{{ application.student }}</td>
 <td>{{ application.student.grade }}</td>
 <td>{{ application.student.school }}</td>
-<td>{{ application.approved }}</td>
+<td class="approved">{{ application.approved }}</td>
 <td>
-  <a data-id="{{ application.pk }}" class="handle-application" href="#">Accept</a>
-  <a data-id="{{ application.pk }}" class="handle-application" href='#'>Reject</a>
+  <a data-id="{{ application.pk }}" data-action="accept" class="handle-application" href="#">Accept</a>
+  <a data-id="{{ application.pk }}" data-action="reject" class="handle-application" href='#'>Reject</a>
 </td>
 </tr>
 {% endfor %}
@@ -48,4 +48,26 @@
 {{ upload_form|render:"forms/no_fieldsets.html" }}
 <input type="submit" style="display: inline;" value="Upload"/>
 </form>
+
+<script type="text/javascript">
+var APPLICATION_URL = "/courses/application/";
+$('.handle-application').click(function() {
+  console.log($(this).data('action'));
+  console.log(APPLICATION_URL + $(this).data('id'));
+  var that = this;
+  $.ajax({
+    method: 'get',
+    url: APPLICATION_URL + $(this).data('id'),
+    data: {action: $(this).data('action')},
+    success: function(data) {
+      console.log(data);
+      $(that).parents('tr').find('td.approved').html(data).animate(200);
+      $('.messages').html("Student updated successfully.");
+    },
+    error: function() {
+      $('.messages').html("Error updating student - please try again later.");
+    }
+  });
+});
+</script>
 {% endblock %}

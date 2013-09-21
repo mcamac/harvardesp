@@ -300,6 +300,9 @@ class Course(models.Model):
     def __unicode__(self):
         return self.name
 
+    def subjects_list(self):
+        return [subject.name for subject in self.subjects.all()]
+
     def grade_range(self):
         return "%d-%d" % (self.min_grade, self.max_grade)
 

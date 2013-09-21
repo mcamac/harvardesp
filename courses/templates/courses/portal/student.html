@@ -9,7 +9,12 @@
 {% for application in applications %}
 {% with application.course as course %}
 <p>
-	Fall 2013 - {{ course.name }} - in room: {{ course.location }} - (Awaiting Approval) - 
+	Fall 2013 - {{ course.name }} - in room: {{ course.location }} - at time: {{ course.timeslot|default:'TBA' }} - 
+  {% if application.approved == 'pending' %}
+  (Awaiting Approval) - 
+  {% elif application.approved == 'rejected' %}
+  (Rejected) - 
+  {% endif %}
 	<a href="{% url 'course_portal' id=course.id %}"> Course Page </a>
 	-
 	<a href="{% url 'unapply_course' id=course.id %}">Unenroll</a>
@@ -17,7 +22,7 @@
 {% endwith %}
 {% endfor %}
 
-<h3>Your Schedule</h3>
+{# <h3>Your Schedule</h3> #}
 
 
 {% flatblock "Student Announcements" using "blocks/h3_block.html" %}
