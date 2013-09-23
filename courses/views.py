@@ -66,13 +66,27 @@ def student_portal(request):
 
 
 @login_required
+def admin_portal(request):
+	if not request.user.is_superuser:
+		return redirect('/')
+
+	ctx = {}
+	ctx['courses'] = Course.objects.all()
+	return render(request, 'courses/portal/admin.html', ctx)
+
+
+@login_required
 def personal_portal(request):
 	""" Redirects to either student or teacher portal if logged in. """
+	if request.user.is_superuser:
+		return admin_portal(request)
+	
 	profile = request.user.get_profile()
 	if hasattr(profile, 'student'):
 		return student_portal(request)
 	elif hasattr(profile, 'teacher'):
 		return teacher_portal(request)
+	
 
 	return redirect('/')
 
