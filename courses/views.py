@@ -31,14 +31,17 @@ def catalog(request):
 	ctx['courses'] = Course.objects.filter(approved=True)
 
 	if not request.user.is_anonymous():
-		profile = request.user.get_profile()
-		if hasattr(profile, 'student'):
-			applications = CourseApplication.objects.filter(
-				student=profile.student)
-			ctx['student'] = profile.student
-			ctx['applications'] = {}
-			for application in applications:
-				ctx['applications'][application.course.name] = application
+		try:
+			profile = request.user.get_profile()
+			if hasattr(profile, 'student'):
+				applications = CourseApplication.objects.filter(
+					student=profile.student)
+				ctx['student'] = profile.student
+				ctx['applications'] = {}
+				for application in applications:
+					ctx['applications'][application.course.name] = application
+		except:
+			pass
 
 	return render(request, 'courses/catalog.html', ctx)
 
