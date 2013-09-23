@@ -20,7 +20,7 @@ from filetransfers.api import prepare_upload
 import esp.settings as settings
 
 def _can_manage_course(user, course):
-	return (user.is_superuser or
+	return (user.is_staff or
 			(hasattr(user.get_profile(), 'teacher') and 
 			 course.teacher == user.get_profile().teacher))
 
@@ -67,7 +67,7 @@ def student_portal(request):
 
 @login_required
 def admin_portal(request):
-	if not request.user.is_superuser:
+	if not request.user.is_staff:
 		return redirect('/')
 
 	ctx = {}
@@ -78,9 +78,9 @@ def admin_portal(request):
 @login_required
 def personal_portal(request):
 	""" Redirects to either student or teacher portal if logged in. """
-	if request.user.is_superuser:
+	if request.user.is_staff:
 		return admin_portal(request)
-	
+
 	profile = request.user.get_profile()
 	if hasattr(profile, 'student'):
 		return student_portal(request)
@@ -289,7 +289,7 @@ def course_upload(request, id):
 def delete_upload(request, id):
 	""" Deletes a course upload"""
 	upload = get_object_or_404(CourseUpload, pk=id)
-	if not (request.user.is_superuser or
+	if not (request.user.is_staff or
 			upload.course.teacher != request.user.get_profile().teacher):
 		return HttpResponse(status=401)
 
@@ -297,9 +297,9 @@ def delete_upload(request, id):
 	return redirect('manage_course', id=upload.course.pk)
 
 
-@user_passes_test(lambda u: u.is_superuser)
+@user_passes_test(lambda u: u.is_staff)
 def scheduler(request):
-	if not request.user.is_superuser:
+	if not request.user.is_staff:
 		return redirect('/')
 		
 	if request.POST:

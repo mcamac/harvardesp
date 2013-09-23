@@ -28,7 +28,7 @@
         <div id="user_nav">
           <p style="display:inline;">Welcome, {{ user.first_name|capfirst }}</p>
           
-          {% if user.is_superuser %}
+          {% if user.is_staff or user.is_superuser %}
           <a href="{% url 'personal_portal' %}">
             Admin Portal
           </a>
