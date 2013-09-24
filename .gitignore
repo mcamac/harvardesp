@@ -4,3 +4,4 @@ venv
 *.DS_Store
 esp.db
 *.json
+esp/settings_remote.py
