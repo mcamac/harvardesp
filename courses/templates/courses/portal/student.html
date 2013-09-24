@@ -14,6 +14,8 @@
   (Awaiting Approval) - 
   {% elif application.approved == 'rejected' %}
   (Rejected) - 
+  {% else %}
+  (Accepted) - 
   {% endif %}
 	<a href="{% url 'course_portal' id=course.id %}"> Course Page </a>
 	-
