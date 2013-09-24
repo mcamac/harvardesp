@@ -9,6 +9,7 @@
 <table>
 <tr>
   <th>Name</th>
+  <th>Email</th>
   <th>Grade</th>
   <th>School</th>
   <th>Enrolled</th>
@@ -17,6 +18,7 @@
 {% for application in applications %}
 <tr>
 <td>{{ application.student }}</td>
+<td>{{ application.student.profile.user.email }}</td>
 <td>{{ application.student.grade }}</td>
 <td>{{ application.student.school }}</td>
 <td class="approved">{{ application.approved }}</td>
