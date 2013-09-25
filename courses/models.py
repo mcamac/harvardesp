@@ -21,6 +21,8 @@ class Student(models.Model):
     """ESP student"""
     profile = models.OneToOneField(UserProfile)
 
+    preferences = models.TextField(default='', null=True, blank=True)
+
     address = models.CharField(max_length=255)
     city = models.CharField(max_length=63)
     state = models.CharField(max_length=63)

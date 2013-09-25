@@ -1,7 +1,65 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 
 {% load flatblock_tags %}
 {% block content %}
+
+<style>
+.connected, .sortable, .exclude, .handles {
+  margin: 10px 0;
+  padding: 0;
+  width: 310px;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.connected li, .sortable li, .exclude li, .handles li {
+  border: 1px solid #CCC;
+  background: #F6F6F6;
+  color: #1C94C4;
+  margin: 5px;
+  padding: 5px;
+  height: 22px;
+  cursor: pointer;
+}
+.handles span {
+  cursor: move;
+}
+
+
+li.highlight {
+  background: #FEE25F;
+}
+#connected {
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.connected {
+  display: inline-block;
+  width: 250px;
+  vertical-align: top;
+}
+.connected li {
+  font-size: 0.9em;
+  height: 50px;
+} 
+li.disabled {
+  background: #af0c0c;
+  color: white;
+  height: 20px;
+}
+li.sortable-placeholder {
+  border: 1px dashed #CCC;
+  background: none;
+}
+
+.save-preferences-btn {
+}
+</style>
+
 <h2> Student Portal </h2>
 
 <h3>Your Courses</h3>
@@ -24,9 +82,61 @@
 {% endwith %}
 {% endfor %}
 
+<h3> Rank Courses </h3>
+<p>Please drag and drop to order the courses below such that <b>the course you would like to take the most is at the top of the list</b>, and the course you would like to take the least is at the bottom of the list.</p>
+
+<ol class="connected list">
+{% if not ranked_courses %}
+  {% for application in applications %}
+    {% if application.approved != 'rejected' %}
+    <li data-id="{{ application.course.pk }}">{{ application.course.name }}</li>
+    {% endif %}
+  {% endfor %}
+{% else %}
+  {% for course in ranked_courses %}
+    <li data-id="{{ course.pk }}">{{ course.name }}</li>
+  {% endfor %}
+{% endif %}
+</ol>
+
+<br/>
+<a class="apply-btn save-preferences-btn">Save Rankings</a>
+<p class="message"></p>
+
 {# <h3>Your Schedule</h3> #}
 
 
 {% flatblock "Student Announcements" using "blocks/h3_block.html" %}
+
+
+<script type="text/javascript" src="{% static 'js/jquery.sortable.min.js' %}"></script>
+{% csrf_token %}
+
+<script type="text/javascript">
+$(function(){
+  $('.connected').sortable({
+    connectWith: '.connected',
+    items: ':not(.disabled)'
+  });
+
+  $('.save-preferences-btn').click(function(e){
+    var prefs = $('ol.connected').children().map(function(){return $(this).data('id');}).get();
+
+    var strPrefs = '[' + prefs.join(',') + ']';
+    $.ajax({
+      method: 'post',
+      url: '/courses/me/preferences/',
+      data: {prefs: strPrefs,
+        csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val()},
+      success: function(data) {
+        if (data == 'OK') {
+          $('.message').html("Course rankings successfully updated.");
+          setTimeout(function(){$('.message').html('');}, 3000);
+        }
+      }
+    });
+  });
+});
+</script>
 
 {% endblock %}

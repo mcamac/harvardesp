@@ -65,6 +65,25 @@ def student_portal(request):
 	applications = CourseApplication.objects.filter(
 		student=student).select_related('course').order_by('approved')
 	ctx['applications'] = applications
+
+	ok_course_ids = [app.course.pk for app in applications if app.approved != 'rejected']
+
+	str_prefs = student.preferences
+
+	ctx['ranked_courses'] = []
+
+	prefs = []
+	if str_prefs:
+		prefs = map(int, str_prefs[1:-1].split(','))
+	if prefs:
+		for course_id in prefs:
+			if course_id in ok_course_ids:
+				ctx['ranked_courses'].append(Course.objects.get(pk=course_id))
+
+	for course_id in ok_course_ids:
+		if course_id not in prefs:
+			ctx['ranked_courses'].append(Course.objects.get(pk=course_id))
+
 	return render(request, 'courses/portal/student.html', ctx)
 
 
@@ -331,3 +350,18 @@ def scheduler(request):
 	ctx['courses'] = json.dumps(courses_arr)
 
 	return render(request, "courses/scheduler.html", ctx)
+
+
+@login_required
+def save_prefs(request):
+	if not hasattr(request.user.get_profile(), 'student'):
+		return HttpResponse('ERROR')
+
+	student = request.user.get_profile().student
+	if request.POST:
+		prefs = request.POST.get('prefs')
+		student.preferences = prefs
+		student.save()
+		return HttpResponse("OK")
+
+	return HttpResponse("NONE")
