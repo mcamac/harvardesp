@@ -15,5 +15,6 @@ urlpatterns = patterns('courses.views',
 	url(r'^destroy/(?P<id>\d+)$', 'delete_course', name='delete_course'),
 	url(r'^application/(?P<application_id>\d+)$', 'handle_application',
 		name='handle_application'),
-	url(r'^uploads/delete/(?P<id>\d+)$', 'delete_upload', name='delete_upload')
+	url(r'^uploads/delete/(?P<id>\d+)$', 'delete_upload', name='delete_upload'),
+	url(r'^spoofst/(?P<id>\d+)$', 'spoof_student', name='spoof_student')
 )

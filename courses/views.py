@@ -1,5 +1,6 @@
 import json
 
+from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
 from django.core.mail import send_mail
@@ -24,6 +25,12 @@ def _can_manage_course(user, course):
 			(hasattr(user.get_profile(), 'teacher') and 
 			 course.teacher == user.get_profile().teacher))
 
+@user_passes_test(lambda u: u.is_superuser)
+def spoof_student(request, id):
+	student = get_object_or_404(Student, pk=id)
+	student.profile.user.backend = 'django.contrib.auth.backends.ModelBackend'
+	login(request, student.profile.user)
+	return redirect('/')
 
 def catalog(request):
 	""" Shows the course catalog """
