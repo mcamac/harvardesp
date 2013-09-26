@@ -1,0 +1,43 @@
+<p>Dear {{ student }},</p>
+ 
+<p>
+Thank you for signing up for ESP! We're looking forward to seeing you <b>this Saturday, September 28</b> for the first day of classes. You have been successfully enrolled in the following ESP course(s):
+</p>
+{% spaceless %}
+{% for slot, courses in courses_list %}
+<p><b>{{ slot }}</b><p>
+{% if courses %}
+{% for course in courses %}
+<p>{{ course.name }} - in room: {{ course.location }}</p>
+{% endfor %}
+{% else %}
+<p>No courses at this time.</p>
+{% endif %}
+{% endfor %}
+{% endspaceless %}
+<p>
+Please attend a single course from each timeslot in which you have courses.
+You may request adjustments in your class schedule throughout the first two weeks, based on limited course availability.
+</p>
+
+<p>
+When you arrive, please come to <b>Science Center Hall A</b>. This year we'll be using classrooms in both Jefferson and the Science Center, but we'll all convene at Science Center A for registration on the first day. I've attached a map of our campus (our location is circled in red) as well as some information on directions and parking.
+</p>
+
+<p>
+Teachers and students have a scheduled lunch break from 12 to 1 pm. Lunch is not provided; students may elect to bring a lunch or eat at a number of inexpensive restaurants in Harvard Square, which is a five-minute walk from our program.
+</p>
+
+<p>
+If we have been in touch with you about receiving travel assistance, please make sure to talk to one of the ESP board members at any point during the day on Saturday. We'll be wearing brown ESP t-shirts so you can find us!
+</p>
+
+<p>
+If you have any questions or concerns, please contact us at harvardesp@gmail.com. For any urgent inquiries on Saturday, you can reach us by phone at 857-600-2ESP (857-600-2377).
+</p>
+
+<p>
+Best,<br/>
+Becky Gould<br/>
+Harvard ESP Co-Director
+</p>
