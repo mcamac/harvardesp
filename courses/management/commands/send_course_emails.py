@@ -15,7 +15,10 @@ def mail_student(student):
     print applications
 
     ctx['timeslots'] = timeslots
-    ctx['courses'] = { t.pk: [] for t in timeslots }
+    ctx['courses'] = {}
+    for t in timeslots:
+        ctx['courses'][t.pk] = []
+        
     for app in applications:
         ctx['courses'][app.course.timeslot.pk].append(app.course)
 
