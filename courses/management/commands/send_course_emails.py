@@ -18,7 +18,7 @@ def mail_student(student):
     ctx['courses'] = {}
     for t in timeslots:
         ctx['courses'][t.pk] = []
-        
+
     for app in applications:
         ctx['courses'][app.course.timeslot.pk].append(app.course)
 
@@ -38,7 +38,8 @@ def mail_student(student):
     email = EmailMultiAlternatives('Your ESP Class Schedule', email_text, 
                          'harvardesp@gmail.com', [student.profile.user.email, 
                                                   student.parent_email],
-                         ['camacho@college.harvard.edu'])
+                         bcc = ['camacho@college.harvard.edu'],
+                         headers = {'Reply-To': 'harvardesp@gmail.com'})
     email.attach_alternative(html_text, 'text/html')
     email.attach_file('courses/templates/email/documents/Map for ESP.gif')
     email.attach_file('courses/templates/email/documents/ESP Parking Information.doc')
