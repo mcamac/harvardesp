@@ -404,6 +404,9 @@ class Course(models.Model):
     def grade_range(self):
         return "%d-%d" % (self.min_grade, self.max_grade)
 
+    def students(self):
+        return [a.student for a in CourseApplication.objects.filter(course=self).exclude(approved='rejected')]
+
 class CourseForm(BetterModelForm):
     name = forms.CharField(max_length=100)
     description = forms.CharField(widget=forms.Textarea)
