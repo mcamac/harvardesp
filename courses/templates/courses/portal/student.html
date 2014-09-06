@@ -63,11 +63,13 @@ li.sortable-placeholder {
 <h2> Student Portal </h2>
 
 <h3>Your Courses</h3>
+<h4>{% flatblock "semester" %}</h4>
+
 
 {% for application in applications %}
 {% with application.course as course %}
 <p>
-	Fall 2013 - {{ course.name }} - in room: {{ course.location }} - at time: {{ course.timeslot|default:'TBA' }} - 
+	{{ course.name }} - in room: {{ course.location }} - at time: {{ course.timeslot|default:'TBA' }} - 
   {% if application.approved == 'pending' %}
   (Awaiting Approval) - 
   {% elif application.approved == 'rejected' %}

@@ -1,8 +1,9 @@
 {% extends "base.html" %}
+{% load flatblock_tags %}
 {% load filetransfers %}
 
 {% block content %}
-<h2> Fall 2013 Course Catalog </h2>
+<h2> {% flatblock "semester" %} Course Catalog </h2>
 {% if not courses %}
 	<p>No courses yet. Please check back soon!</p>
 {% endif %}
