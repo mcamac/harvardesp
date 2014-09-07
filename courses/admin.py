@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.contrib.admin.sites import AdminSite
+from django.contrib.auth.models import User
 from flatblocks.models import FlatBlock
 
 from courses.models import (
@@ -9,39 +11,43 @@ from courses.models import (
 	Timeslot,
 	UserProfile)
 
+admin_site = AdminSite()
+
 class CourseAdmin(admin.ModelAdmin):
 	pass
 
-admin.site.register(Course, CourseAdmin)
+admin_site.register(Course, CourseAdmin)
+
+admin_site.register(User)
 
 class UserProfileAdmin(admin.ModelAdmin):
 	pass
 
-admin.site.register(UserProfile, UserProfileAdmin)
+admin_site.register(UserProfile, UserProfileAdmin)
 
 
 class StudentAdmin(admin.ModelAdmin):
 	pass
 
-admin.site.register(Student, StudentAdmin)
+admin_site.register(Student, StudentAdmin)
 
 
 class TeacherAdmin(admin.ModelAdmin):
 	pass
 
-admin.site.register(Teacher, TeacherAdmin)
+admin_site.register(Teacher, TeacherAdmin)
 
 
 class SubjectAdmin(admin.ModelAdmin):
 	pass
 
-admin.site.register(Subject, SubjectAdmin)
+admin_site.register(Subject, SubjectAdmin)
 
 
 class TimeslotAdmin(admin.ModelAdmin):
 	pass
 
-admin.site.register(Timeslot, TimeslotAdmin)
+admin_site.register(Timeslot, TimeslotAdmin)
 
 class FlatBlockAdmin(admin.ModelAdmin):
     ordering = ['slug', ]
@@ -56,4 +62,4 @@ class FlatBlockAdmin(admin.ModelAdmin):
 
 
 
-admin.site.register(FlatBlock, FlatBlockAdmin)
+admin_site.register(FlatBlock, FlatBlockAdmin)
